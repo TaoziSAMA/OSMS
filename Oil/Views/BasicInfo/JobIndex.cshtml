@@ -1,0 +1,119 @@
+﻿
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>JobIndex</title>
+</head>
+<body>
+    <script>
+    //执行渲染\
+    var table;
+    $(function () {
+        layui.use('table', function () {
+            table = layui.table;
+            table.render({
+                elem: '#table'
+                , url: '/JobManagement/GetList' //数据接口
+                , limit: 20
+                , cols: [[ //表头
+                    { field: 'Name', title: '职位名称', sort: true },
+                    { field: 'Code', title: '职位代码' },
+                    {
+                        field: 'Id', title: '', align: 'center', templet: function (d) {
+                            var button;
+                            button = '<div>'
+                            if ('@ViewBag.edit') { button += ' <a class="layui-btn layui-btn-sm" lay-event="edit">编辑</a>' }
+                            if ('@ViewBag.del') { button += ' <a class="layui-btn layui-btn-danger layui-btn-sm" lay-event="del">删除</a>' }
+                            button += '</div> '
+                            return button;
+                        }
+                    }
+                ]]
+                , page: true
+            });
+            //绑定菜单
+            table.on('tool(table)', function (obj) {
+                var data = obj.data;
+                if (obj.event === 'edit') {
+                    AjaxHTML('/JobManagement/AddOrEdit', data, function (data) {
+                        LayerHtml('编辑职位', data, '400px');
+                    })
+                }
+                if (obj.event === 'del') {
+                    layer.confirm('确定要删除该职位吗？', {
+                        btn: ['确定', '取消'] //按钮
+                    }, function () {
+                        AjaxPost('/JobManagement/Del', data, function (data) {
+                            if (data) {
+                                layer.msg('删除成功', { icon: 1 })
+                                Search();
+                            }
+                        })
+                    });
+                }
+            });
+        });
+    })
+    //搜索
+    function Search() {
+        var obj = $("#search").serializeArray()
+        table.reload('table', {
+            where: { Name: obj[0].value, Code: obj[1].value }
+            , page: {
+                curr: 1 //重新从第 1 页开始
+            }
+        });
+    }
+    //添加
+    function Add() {
+        AjaxHTML('/JobManagement/AddOrEdit', null, function (data) {
+            LayerHtml('添加职位', data, '400px');
+        })
+    }
+    </script>
+    <div class="layui-fluid" style="padding: 12px">
+        <div class="layui-row">
+            <div class="layui-card">
+                <div class="layui-card-header">
+                    <h3>职位管理</h3>
+                </div>
+                <div class="layui-card-body">
+                    <div class="layui-col-md10">
+                        <form id="search">
+                            <div class="layui-inline">
+                                <label class="layui-form-label">职位名称</label>
+                                <div class="layui-input-inline" style="width: 150px;">
+                                    <input type="text" name="Name" autocomplete="off" class="layui-input">
+                                </div>
+                            </div>
+                            <div class="layui-inline">
+                                <label class="layui-form-label">职位代码</label>
+                                <div class="layui-input-inline" style="width: 150px;">
+                                    <input type="text" name="Code" autocomplete="off" class="layui-input">
+                                </div>
+                            </div>
+                            <div class="layui-inline">
+                                <button type="button" class="layui-btn" onclick="Search()"><i class="layui-icon layui-icon-search"></i></button>
+                            </div>
+                        </form>
+                    </div>
+                    <div class="layui-col-md1 layui-col-md-offset1" style="text-align:center">
+                        @if (ViewBag.add != null)
+                        {<button class="layui-btn layui-btn-normal" onclick="Add()"><i class="layui-icon layui-icon-add-1"></i>  </button>}
+                    </div>
+                    <div class="layui-row">
+                        <table id="table" class="layui-hide" lay-filter="table"></table>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</body>
+</html>

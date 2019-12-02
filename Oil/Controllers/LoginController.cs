@@ -10,7 +10,7 @@ namespace Oil.Controllers
     public class LoginController : Controller
     {
         Models.OSMS db = new Models.OSMS();
-
+        
         // GET: Login
         public ActionResult Index()
         {
@@ -103,6 +103,17 @@ namespace Oil.Controllers
                     Response.Cookies.Add(cookie2);
                 }
                 Session["userInfo"] = list;
+
+                //存入登录信息
+                Models.LoginInfo lf = new Models.LoginInfo();
+
+                lf.StaffId = list.Id;//用户id
+                lf.LoginTime = DateTime.Now;//登录时间
+                lf.Id = Guid.NewGuid();
+                db.LoginInfo.Add(lf);
+                db.SaveChanges();
+
+
                 return Json(result1, JsonRequestBehavior.AllowGet);
             }
             else
