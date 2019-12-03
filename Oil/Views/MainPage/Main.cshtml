@@ -226,16 +226,15 @@
 
         </div>
     </div>
-
-    <script src="../../layuiadmin/layui/layui.js?t=1"></script>
-    <script src="~/layuiadmin/lib/extend/echarts.js"></script>
+    <script src="~/Scripts/jquery-3.3.1.js"></script>
+    <script src="~/layuiadmin/layui/layui.js"></script>
     <script>
   layui.config({
     base: '/layuiadmin/' //静态资源所在路径
   }).extend({
-    index: 'lib/index' //主入口模块
-  }).use(['index', 'console']);
-
+      index: 'lib/index', //主入口模块
+  }).use(['index', 'console', 'echarts'], function () {
+        var echarts = layui.echarts;
         // 基于准备好的dom，初始化echarts实例
         var myChart = echarts.init(document.getElementById('main'));
         // 指定图表的配置项和数据
@@ -260,6 +259,8 @@
 
         // 使用刚指定的配置项和数据显示图表。
         myChart.setOption(option);
+  });
+        
     </script>
 </body>
 </html>

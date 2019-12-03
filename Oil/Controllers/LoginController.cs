@@ -4,14 +4,16 @@ using System.Linq;
 using System.Web;
 using System.Web.Mvc;
 using System.Web.Security;
+using Oil.AppCode;
 
 namespace Oil.Controllers
 {
     public class LoginController : Controller
     {
         Models.OSMS db = new Models.OSMS();
-        
+
         // GET: Login
+        [LoginFilter(IsCheck = false)]
         public ActionResult Index()
         {
             //判断是否存在cookie
@@ -40,6 +42,7 @@ namespace Oil.Controllers
 
         //登录验证
         [HttpPost]
+        [LoginFilter(IsCheck = false)]
         public ActionResult IndexLG(FormCollection f)
         {
             

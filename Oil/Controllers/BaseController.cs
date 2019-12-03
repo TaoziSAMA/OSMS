@@ -24,10 +24,14 @@ namespace Oil.Controllers
             return Json(new { Result = false, ErrorMsg = errorMsg }, JsonRequestBehavior.AllowGet);
         }
 
-        //获取用户具体权限
+        /// <summary>
+        /// 确认用户是否拥有某权限
+        /// </summary>
+        /// <param name="code">权限名称</param>
+        /// <returns>返回bool</returns>
         public bool CheckResources(string code)
         {
-            Staff user = Session["userInfo"] as Staff;
+            Staff user = (Staff)System.Web.HttpContext.Current.Session["userInfo"];
             StaffRole sRData = db.StaffRole.Where(x => x.StaffId == user.Id).FirstOrDefault();//用户是什么角色
             List<RoleResourceModule> rrData = db.RoleResourceModule.Where(x => x.RoleId == sRData.RoleId).ToList();//这个角色有什么资源
             //将角色的资源id循环填入资源id的List
@@ -40,14 +44,14 @@ namespace Oil.Controllers
 
 
             //总和
-            if (Sredata.Any(x => x.Code.Contains(code)))
+            if (srsDate.Any(x => x.Code.Contains(code)))
             {
                 return true;
             }
             else
             {
                 return false;
-            }=
+            }
         }
     }
 }

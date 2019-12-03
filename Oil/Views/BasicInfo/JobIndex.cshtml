@@ -10,20 +10,24 @@
     <meta name="viewport" content="width=device-width" />
     <title>JobIndex</title>
     <link href="~/layuiadmin/layui/css/layui.css" rel="stylesheet" />
-    <script src="~/layuiadmin/layui/layui.js"></script>
-    <script src="~/layuiadmin/lib/admin.js"></script>
 </head>
 <body>
+    <script src="~/Scripts/jquery-3.3.1.js"></script>
+    <script src="~/layuiadmin/layui/layui.js"></script>
+    <script src="~/layuiadmin/lib/admin.js"></script>
     <script>
     //执行渲染\
     var table;
-    $(function () {
-        layui.use('table', function () {
+    layui.config({
+    base: '/layuiadmin/' //静态资源所在路径
+    }).extend({
+        index: '/lib/index', //主入口模块
+    }).use('table', function () {
             table = layui.table;
             table.render({
                 elem: '#table'
                 , url: '/BasicInfo/GetJobList' //数据接口
-                , limit: 20
+                , limit: 10
                 , cols: [[ //表头
                     { field: 'Name', title: '职位名称', sort: true },
                     { field: 'Code', title: '职位代码' },
@@ -61,7 +65,6 @@
                     });
                 }
             });
-        });
     })
     //搜索
     function Search() {
