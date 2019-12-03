@@ -13,11 +13,11 @@ namespace Oil.Controllers
             using (Models.OSMS db =new Models.OSMS())
             {
                 string result = null;
-                DateTime Date = DateTime.Now; //当前时间
+                DateTime Date =DateTime.Now.Date; //当前时间
                 for (int i = 7; i > 0; i--)
                 {
-                    DateTime beginTime = Date.AddDays(-i - 1);
-                    DateTime endTime = Date.AddDays(-i);
+                    DateTime beginTime = Date.AddDays(-i);
+                    DateTime endTime = Date.AddDays(-i+1);
 
                     List<Models.LoginInfo> data = db.LoginInfo.Where(x => x.StaffId == StaffId & (x.LoginTime >= beginTime) & (x.LoginTime < endTime)).ToList();
                     if (data.Count > 0)

@@ -8,10 +8,16 @@ namespace Oil.Controllers
 {
     public class BasicInfoController : Controller
     {
+        
         // GET: BasicInfo
         public ActionResult JobIndex()
         {
             return View();
+        }
+
+        public ActionResult GetJobList()
+        { 
+        
         }
     }
 }
