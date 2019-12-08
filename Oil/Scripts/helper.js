@@ -8,7 +8,7 @@ function AjaxPost(url, param, callback, async) {
         data: param,
         success: function (data) {
             if (data.Result != false) {
-                callback(data.Info)
+                callback(data.info)
             } else {
                 layer.alert(data.ErrorMsg, { icon: 2 })
             }

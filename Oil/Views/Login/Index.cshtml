@@ -105,7 +105,6 @@
             //提交
             form.on('submit(LAY-user-login-submit)', function (obj) {
                 //请求登入接口
-                console.log(obj.field)
                 admin.req({
                     url: '/Login/IndexLG' //实际使用请改成服务端真实接口
                     , data: obj.field
