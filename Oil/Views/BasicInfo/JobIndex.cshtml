@@ -7,22 +7,20 @@
 
 <html>
 <head>
+    <meta name="renderer" content="webkit">
     <meta name="viewport" content="width=device-width" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
     <title>JobIndex</title>
     <link href="~/layuiadmin/layui/css/layui.css" rel="stylesheet" />
 </head>
 <body>
-    <script src="~/Scripts/jquery-3.3.1.js"></script>
-    <script src="~/layuiadmin/layui/layui.js"></script>
-    <script src="~/layuiadmin/lib/admin.js"></script>
+    <script type="text/javascript" src="~/Scripts/jquery-3.3.1.js"></script>
+    <script type="text/javascript" src="~/layuiadmin/layui/layui.js"></script>
+    <script type="text/javascript" src="~/Scripts/helper.js"></script>
     <script>
     //执行渲染\
-    var table;
-    layui.config({
-    base: '/layuiadmin/' //静态资源所在路径
-    }).extend({
-        index: '/lib/index', //主入口模块
-    }).use('table', function () {
+        var table;
+        layui.use('table', function () {
             table = layui.table;
             table.render({
                 elem: '#table'
@@ -32,7 +30,7 @@
                     { field: 'Name', title: '职位名称', sort: true },
                     { field: 'Code', title: '职位代码' },
                     {
-                        field: 'Id', title: '', align: 'center', templet: function (d) {
+                        field: 'Id', title: '操作', align: 'center', templet: function (d) {
                             var button;
                             button = '<div>'
                             if ('@ViewBag.edit') { button += ' <a class="layui-btn layui-btn-sm" lay-event="edit">编辑</a>' }
@@ -48,7 +46,7 @@
             table.on('tool(table)', function (obj) {
                 var data = obj.data;
                 if (obj.event === 'edit') {
-                    AjaxHTML('/JobManagement/AddOrEdit', data, function (data) {
+                    AjaxHTML('/BasicInfo/AddOrEdit', data, function (data) {
                         LayerHtml('编辑职位', data, '400px');
                     })
                 }
@@ -56,7 +54,7 @@
                     layer.confirm('确定要删除该职位吗？', {
                         btn: ['确定', '取消'] //按钮
                     }, function () {
-                        AjaxPost('/JobManagement/Del', data, function (data) {
+                        AjaxPost('/BasicInfo/Del', data, function (data) {
                             if (data) {
                                 layer.msg('删除成功', { icon: 1 })
                                 Search();
@@ -78,11 +76,12 @@
     }
     //添加
     function Add() {
-        AjaxHTML('/JobManagement/AddOrEdit', null, function (data) {
+        AjaxHTML('/BasicInfo/AddOrEdit', null, function (data) {
             LayerHtml('添加职位', data, '400px');
         })
     }
     </script>
+
     <div class="layui-fluid" style="padding: 12px">
         <div class="layui-row">
             <div class="layui-card">
@@ -91,16 +90,16 @@
                 </div>
                 <div class="layui-card-body">
                     <div class="layui-col-md10">
-                        <form id="search">
+                        <form id="search" >
                             <div class="layui-inline">
                                 <label class="layui-form-label">职位名称</label>
-                                <div class="layui-input-inline" style="width: 150px;">
+                                <div class="layui-input-inline">
                                     <input type="text" name="Name" autocomplete="off" class="layui-input">
                                 </div>
                             </div>
                             <div class="layui-inline">
                                 <label class="layui-form-label">职位代码</label>
-                                <div class="layui-input-inline" style="width: 150px;">
+                                <div class="layui-input-inline">
                                     <input type="text" name="Code" autocomplete="off" class="layui-input">
                                 </div>
                             </div>

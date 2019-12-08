@@ -373,6 +373,7 @@
     <Content Include="layuiadmin\layui\font\iconfont.woff" />
     <Content Include="layuiadmin\layui\font\iconfont.woff2" />
     <None Include="Scripts\jquery-3.3.1.intellisense.js" />
+    <Content Include="Scripts\helper.js" />
     <Content Include="Scripts\jquery-3.3.1.js" />
     <Content Include="Scripts\jquery-3.3.1.min.js" />
     <Content Include="Scripts\jquery-3.3.1.slim.js" />
@@ -395,6 +396,7 @@
     <Content Include="Views\Login\Index.cshtml" />
     <Content Include="Views\MainPage\Main.cshtml" />
     <Content Include="Views\BasicInfo\JobIndex.cshtml" />
+    <Content Include="Views\BasicInfo\AddOrEdit.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
+using Newtonsoft.Json;
 using Oil.Controllers;
 
 namespace Oil.AppCode
@@ -24,10 +25,9 @@ namespace Oil.AppCode
                 // filterContext.Result = new EmptyResult();
                 //没有权限,验证不通过
                 ContentResult Content = new ContentResult();
-                Content.Content = "莫得权限，操作非法！";
+                Content.Content = "莫得权限，操作非法'";
                 //执行结果为权限不通过
                 filterContext.Result = Content;
-
             }
         }
     }

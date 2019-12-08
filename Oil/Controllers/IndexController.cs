@@ -12,10 +12,16 @@ namespace Oil.Controllers
         // GET: Index
         public ActionResult Index()
         {
+            var baseCtrler = DependencyResolver.Current.GetService<BaseController>();
             Models.Staff user = Session["userInfo"] as Models.Staff;
             ViewBag.username = user.Name;
+            List<Models.SystemResourceModule> Sredata = baseCtrler.GetSystemResources(user.Id);
+
+            ViewBag.SystemResourceModuleParent = Sredata.Where(x => x.ParentId == new Guid()).ToList(); //一级菜单
+            ViewBag.SystemResourceModule = Sredata.Where(x => x.ParentId != new Guid()).ToList();//二级菜单
             return View();
         }
+
 
 
         //退出登录
