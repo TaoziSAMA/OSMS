@@ -27,6 +27,7 @@ namespace Oil.Models
         public virtual DbSet<Staff> Staff { get; set; }
         public virtual DbSet<StaffRole> StaffRole { get; set; }
         public virtual DbSet<SystemResourceModule> SystemResourceModule { get; set; }
+        public virtual DbSet<View_StaffJ> View_StaffJ { get; set; }
 
         protected override void OnModelCreating(DbModelBuilder modelBuilder)
         {
@@ -89,6 +90,11 @@ namespace Oil.Models
                 .HasMany(e => e.LoginInfo)
                 .WithRequired(e => e.Staff)
                 .WillCascadeOnDelete(false);
+
+            modelBuilder.Entity<View_StaffJ>()
+                .Property(e => e.Status)
+                .IsFixedLength()
+                .IsUnicode(false);
         }
     }
 }

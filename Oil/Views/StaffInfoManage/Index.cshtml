@@ -1,0 +1,129 @@
+﻿
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <title>员工基础信息管理</title>
+
+    <link href="~/layuiadmin/layui/css/layui.css" rel="stylesheet" />
+</head>
+<body>
+    <script type="text/javascript" src="~/Scripts/jquery-3.3.1.js"></script>
+    <script type="text/javascript" src="~/layuiadmin/layui/layui.js"></script>
+    <script type="text/javascript" src="~/Scripts/helper.js"></script>
+    <script>
+    //执行渲染\
+    var table;
+    $(function () {
+        layui.use('table', function () {
+            table = layui.table;
+            table.render({
+                elem: '#table'
+                , url: '/StaffInfoManage/GetList' //数据接口
+                , limit: 15
+                , cols: [[ //表头
+                    { field: 'No', title: '员工编号', sort: true },
+                    { field: 'Name', title: '员工姓名' },
+                    { field: 'Sex', title: '员工性别', templet: function (d) { return d.Sex == true ? '男' : '女' } },
+                    {
+                        field: 'BirthDay', title: '出生日期', templet: function (d) { return GetTime(d.BirthDay, 'yd', '年', '月', '日') }
+                    },
+                    {
+                        field: 'Id', title: '年龄', templet: function (d) {
+                            return GetAge(d.BirthDay)
+                        }
+                    },
+                    { field: 'NativePlace', title: '籍贯' },
+                    { field: 'Email', title: '邮箱', width: 200 },
+                    { field: 'JobName', title: '职位' },
+                    { field: 'Status', title: '状态', templet: function (d) { return d.Status == 1 ? '在职' : '离职' } },
+                    {
+                        field: 'Id', title: '', align: 'center', templet: function (d) {
+                            var button;
+                            button = '<div>'
+                            if ('@ViewBag.edit') { button += ' <a class="layui-btn layui-btn-sm" lay-event="edit">编辑</a>' }
+                            button += '</div> '
+                            return button;
+                        }
+                    }
+                ]]
+                , page: true
+            });
+
+            //绑定菜单
+            table.on('tool(table)', function (obj) {
+                var data = obj.data;
+                console.log(data)
+                if (obj.event === 'edit') {
+                    AjaxHTML('/StaffInfoManage/AddOrEdit', data, function (data) {
+                        LayerHtml('编辑员工基本信息', data, 800);
+                    })
+                }
+            });
+        });
+    })
+    //搜索
+    function Search() {
+        var obj = $("#search").serializeArray()
+        table.reload('table', {
+            where: { No: obj[0].value, Name: obj[1].value }
+            , page: {
+                curr: 1 //重新从第 1 页开始
+            }
+        });
+    }
+
+    //添加
+        function Add() {
+        AjaxHTML('/StaffInfoManage/AddOrEdit', null, function (data) {
+            LayerHtml('添加员工基本信息', data, 800);
+        })
+    }
+    </script>
+    <div class="layui-fluid" style="padding: 12px">
+        <div class="layui-row">
+            <div class="layui-card">
+                <div class="layui-card-header">
+                    <h3>员工基础信息管理</h3>
+                </div>
+                <div class="layui-card-body">
+                    <div class="layui-col-md10">
+                        <form id="search">
+                            <div class="layui-inline">
+                                <label class="layui-form-label">员工编号</label>
+                                <div class="layui-input-inline" style="width: 150px;">
+                                    <input type="text" name="No" autocomplete="off" class="layui-input">
+                                </div>
+                            </div>
+                            <div class="layui-inline">
+                                <label class="layui-form-label">员工姓名</label>
+                                <div class="layui-input-inline" style="width: 150px;">
+                                    <input type="text" name="Name" autocomplete="off" class="layui-input">
+                                </div>
+                            </div>
+                            <div class="layui-inline">
+                                <button type="button" class="layui-btn" onclick="Search()"><i class="layui-icon layui-icon-search"></i></button>
+                            </div>
+                        </form>
+                    </div>
+                    <div class="layui-col-md1 layui-col-md-offset1" style="text-align:center">
+                        @if (ViewBag.add != null)
+                        {<button class="layui-btn layui-btn-normal" onclick="Add()"><i class="layui-icon layui-icon-add-1"></i></button>}
+                    </div>
+                    <div class="layui-row">
+                        <table id="table" class="layui-hide" lay-filter="table"></table>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+</body>
+</html>
