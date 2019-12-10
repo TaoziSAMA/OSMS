@@ -158,6 +158,7 @@
                 $.ajax({
                     url: "/Index/OutLogin",
                     success: function (data) {
+                        console.log(data.info)
                         if (data.info == "1") {
                             
                             window.location.href = "/Login/Index"
