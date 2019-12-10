@@ -5,8 +5,9 @@
             var form = layui.form;
             //监听提交
             form.on('submit(formDemo)', function (data) {
-                AjaxPost('/BasicInfo/Save', data.field, function (res) {
-                    if (res) {
+                AjaxPost('/BasicInfo/Save', data.field, function (data) {
+                    alert(data)
+                    if (data=="true") {
                         layer.closeAll();
                         layer.msg('保存成功', { icon: 1 })
                         Search();
