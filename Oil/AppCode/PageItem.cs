@@ -11,7 +11,7 @@ namespace Oil.AppCode
             public int code { get; set; }
             public int count { get; set; }
             public List<T> data { get; set; }
-            public int msg { get; set; }
+            public string msg { get; set; }
 
     }
 }

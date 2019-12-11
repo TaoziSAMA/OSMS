@@ -1,0 +1,119 @@
+﻿
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>组织机构管理</title>
+    <link href="~/layuiadmin/layui/css/layui.css" rel="stylesheet" />
+    <link href="~/layuiadmin/treetable-lay/treetable.css" rel="stylesheet" />
+    <script src="~/Scripts/jquery-3.3.1.js"></script>
+    <script src="~/layuiadmin/layui/layui.js"></script>
+    <script src="~/layuiadmin/treetable-lay/treetable.js"></script>
+    <script src="~/Scripts/helper.js"></script>
+</head>
+<body>
+    <script>
+    //执行渲染\
+    var table;
+    var renderTable;
+    layui.config({
+            base: '../layuiadmin/'
+        }).extend({
+            treetable:'treetable-lay/treetable'
+        }).use('treetable', function () {
+        table = layui.table;
+        var treetable = layui.treetable;
+        // 渲染表格
+        renderTable = function () {
+            treetable.render({
+                treeColIndex: 0,
+                treeSpid: '079489AE-F194-45C0-9776-A7D53EE2B588',
+                treeIdName: 'Id',
+                treePidName: 'ParentId',
+                treeDefaultClose: true,
+                treeLinkage: false,
+                elem: '#table',
+                url: '/OrgManage/GetList',
+                page: false,
+                cols: [[
+                    { type: 'numbers' },
+                    //{ type: 'checkbox' },
+                     { field: 'Name', title: '组织机构名称' },
+                     { field: 'Code', title: '代码' },
+                     { field: 'Leve', title: '区域级别', templet: function (d) { return GetLeve(d.Leve) } },
+                     {
+                         width: 400, align: 'center', title: '', templet: function (d) {
+                             var button;
+                             button = '<div>'
+                             if ('@ViewBag.add') { button += ' <a class="layui-btn layui-btn-normal layui-btn-sm" lay-event="add">添加子机构</a>' }
+                             if ('@ViewBag.edit') { button += ' <a class="layui-btn layui-btn-sm" lay-event="edit">编辑机构</a>' }
+                             if ('@ViewBag.del') { button += ' <a class="layui-btn layui-btn-danger layui-btn-sm" lay-event="del">删除机构及子机构</a>' }
+                             button += '</div> '
+                             return button;
+                         }
+                     }
+                ]],
+            });
+        }
+        renderTable();
+        //绑定菜单
+        table.on('tool(table)', function (obj) {
+            var data = obj.data;
+            if (obj.event === 'add') {
+                if (data.Leve == 3) {
+                    layer.alert('无法在最底层机构添加子机构', { icon: 2 })
+                } else {
+                    data.ParentId = null;//标记为添加
+                    AjaxHTML('/OrgManage/AddOrEdit', data, function (data) {
+                        LayerHtml('添加一个子机构', data);
+                    })
+                }
+            } else if (obj.event === 'edit') {
+                AjaxHTML('/OrgManage/AddOrEdit', data, function (data) {
+                    LayerHtml('编辑机构', data);
+                })
+            } else if (obj.event === 'del') {
+                layer.confirm('确定要删除该机构以及所有子机构吗？', {
+                    btn: ['确定', '取消'] //按钮
+                }, function () {
+                    if (data.Leve == 0) {
+                        layer.alert('无法删除最高级机构', { icon: 2 })
+                    } else {
+                        AjaxPost('/OrgManage/Del', data, function (data) {
+                            if (data) {
+                                layer.msg('删除成功', { icon: 1 })
+                                Search();
+                            }
+                        })
+                    }
+                });
+            }
+        });
+    });
+    //刷新
+    function Search() {
+        renderTable();
+    }
+    </script>
+    <div class="layui-fluid" style="padding: 12px">
+        <div class="layui-row">
+            <div class="layui-card">
+                <div class="layui-card-header">
+                    <h3>组织机构管理</h3>
+                </div>
+                <div class="layui-card-body" style="padding-top:0px">
+                    <div class="layui-row">
+                        <table id="table" class="layui-table" lay-filter="table"></table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</body>
+</html>

@@ -137,13 +137,14 @@
     <Compile Include="Controllers\IndexController.cs" />
     <Compile Include="Controllers\LoginController.cs" />
     <Compile Include="Controllers\MainPageController.cs" />
+    <Compile Include="Controllers\OrgManageController.cs" />
     <Compile Include="Controllers\StaffInfoManageController.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
-    <Compile Include="Migrations\201912100313106_initCreate.cs" />
-    <Compile Include="Migrations\201912100313106_initCreate.Designer.cs">
-      <DependentUpon>201912100313106_initCreate.cs</DependentUpon>
+    <Compile Include="Migrations\201912110841521_initCreate.cs" />
+    <Compile Include="Migrations\201912110841521_initCreate.Designer.cs">
+      <DependentUpon>201912110841521_initCreate.cs</DependentUpon>
     </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\Approver.cs" />
@@ -604,6 +605,7 @@
     <Content Include="Views\StaffInfoManage\Index.cshtml" />
     <Content Include="Views\StaffInfoManage\GetOrganizationStructure.cshtml" />
     <Content Include="Views\StaffInfoManage\GetJob.cshtml" />
+    <Content Include="Views\OrgManage\Index.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
@@ -623,8 +625,8 @@
     <Content Include="Scripts\jquery-3.3.1.min.map" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Migrations\201912100313106_initCreate.resx">
-      <DependentUpon>201912100313106_initCreate.cs</DependentUpon>
+    <EmbeddedResource Include="Migrations\201912110841521_initCreate.resx">
+      <DependentUpon>201912110841521_initCreate.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>
