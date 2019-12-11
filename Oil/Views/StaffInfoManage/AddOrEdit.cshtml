@@ -43,13 +43,13 @@
     });
     //打开添加机构
     function ShowOrg() {
-        AjaxHTML('/EmployeeInfo/GetOrganizationStructure', null, function (data) {
+        AjaxHTML('/StaffInfoManage/GetOrganizationStructure', null, function (data) {
             LayerHtmlSet('选择机构', data, 700, 500)
         })
     }
     //打开添加工作
     function ShowJob() {
-        AjaxHTML('/EmployeeInfo/GetJob', null, function (data) {
+        AjaxHTML('/StaffInfoManage/GetJob', null, function (data) {
             LayerHtmlSet('选择职位', data, 700, 500)
         })
     }

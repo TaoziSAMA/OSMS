@@ -1,0 +1,72 @@
+﻿<script>
+    //执行渲染\
+    var table;
+    var index1 = window.Layindex + 1;
+        layui.use('table', function () {
+        table = layui.table;
+        table.render({
+              elem: '#table2'
+            , url: '/StaffInfoManage/GetJobList' //数据接口
+            , limit:5
+            , cols: [[ //表头
+                { field: 'Name', title: '职位名称'},
+                { field: 'Code', title: '职位代码' },
+                 {
+                     field: 'Id', title: '', align: 'center', templet: function (d) {
+                         var button;
+                         button = '<div>'
+                         button += ' <a class="layui-btn layui-btn-sm" lay-event="select">选择</a>'
+                         button += '</div> '
+                         return button;
+                     }
+                 }
+            ]]
+            , page: true
+        });
+        //绑定菜单
+        table.on('tool(table2)', function (obj) {
+            var data = obj.data;
+            if (obj.event === 'select') {
+                $('#form :input[name=JobID]').val(data.Id)
+                $('#form :input[name=JobName]').val(data.Name)
+                layer.close(index1);
+            }
+        });
+        });
+    //搜索
+    function Search1() {
+        var obj = $("#search1").serializeArray()
+        table.reload('table2', {
+            where: { Name: obj[0].value, Code: obj[1].value }
+            ,page: {
+            curr: 1 //重新从第 1 页开始
+           }
+        });
+    }
+</script>
+<div style="padding:20px;">
+    <div class="layui-row">
+        <div>
+            <form id="search1">
+                <div class="layui-inline">
+                    <label class="layui-form-label">职位名称</label>
+                    <div class="layui-input-inline" style="width: 100px;">
+                        <input type="text" name="Name" autocomplete="off" class="layui-input">
+                    </div>
+                </div>
+                <div class="layui-inline">
+                    <label class="layui-form-label">职位代码</label>
+                    <div class="layui-input-inline" style="width: 100px;">
+                        <input type="text" name="Code" autocomplete="off" class="layui-input">
+                    </div>
+                </div>
+                <div class="layui-inline">
+                    <button type="button" class="layui-btn" onclick="Search1()"><i class="layui-icon layui-icon-search"></i></button>
+                </div>
+            </form>
+        </div>
+    </div>
+    <div class="layui-row" style="margin-top:15px;">
+        <table id="table2" class="layui-hide" lay-filter="table2"></table>
+    </div>
+</div>

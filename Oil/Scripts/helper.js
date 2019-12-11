@@ -57,6 +57,7 @@ function LayerHtmlSet(title, html, width, heigth, type) {
          title: title,
          type: type == null ? 1 : type,
          anim: 4,
+         shade:0,
          area: [width + 'px', heigth + 'px'], //宽高
          content: html
      });

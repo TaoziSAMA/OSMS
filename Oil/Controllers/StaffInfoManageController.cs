@@ -114,5 +114,42 @@ namespace Oil.Controllers
             }
             catch (Exception e) { return baseCtrler.FJson(e.Message); }
         }
+
+        //打开组织页面
+        public ActionResult GetOrganizationStructure()
+        {
+            return View();
+        }
+
+        //组织页面数据
+        public JsonResult GetOrgOption()
+        {
+            var baseCtrler = DependencyResolver.Current.GetService<BaseController>();
+            if (baseCtrler.CheckResources("StaffManager") || baseCtrler.CheckResources("OilStationDailyEntryManager_Applay") || baseCtrler.CheckResources("OilStationDailyEntryManager_Update"))
+            {
+                PageItem<OrganizationStructure> data = new PageItem<OrganizationStructure>();
+                data.data = db.OrganizationStructure.Where(x=>true).Where(x=>x.IsDel==false).ToList();
+                return Json(data, JsonRequestBehavior.AllowGet);
+            }
+            else { return baseCtrler.SJson("非法操作"); }
+        }
+
+        //打开职位页面
+        public ActionResult GetJob()
+        {
+            return View();
+        }
+
+        //获取职位数据
+        public JsonResult GetJobList(Job info,int page,int limit)
+        {
+            var baseCtrler = DependencyResolver.Current.GetService<BaseController>();
+            if (baseCtrler.CheckResources("StaffManager") || baseCtrler.CheckResources("OilStationDailyEntryManager_Applay") || baseCtrler.CheckResources("OilStationDailyEntryManager_Update"))
+            {
+                PageItem<Job> data = Help.Page(page, limit, db.Job.Where(x=>x.IsDel==false&x.Code.Contains(info.Code==null?x.Code:info.Code)&x.Name.Contains(info.Name==null?x.Name:info.Name)).OrderBy(x=>x.Id));
+                return Json(data, JsonRequestBehavior.AllowGet);
+            }
+            else { return baseCtrler.SJson("非法操作"); }
+        }
     }
 }
