@@ -127,9 +127,17 @@ namespace Oil.Controllers
             var baseCtrler = DependencyResolver.Current.GetService<BaseController>();
             if (baseCtrler.CheckResources("StaffManager") || baseCtrler.CheckResources("OilStationDailyEntryManager_Applay") || baseCtrler.CheckResources("OilStationDailyEntryManager_Update"))
             {
-                PageItem<OrganizationStructure> data = new PageItem<OrganizationStructure>();
-                data.data = db.OrganizationStructure.Where(x=>true).Where(x=>x.IsDel==false).ToList();
-                return Json(data, JsonRequestBehavior.AllowGet);
+                var list = (from org in db.OrganizationStructure.Where(x => true).Where(x => x.IsDel == false)
+                            select new
+                            {
+                                Id = org.Id,
+                                Name = org.Name,
+                                Code = org.Code,
+                                Leve = org.Leve,
+                                lay_is_isChecked = true,
+                                Pid = org.ParentId == null ? new Guid("{A7243447-F9AD-4A93-8C3B-464B9389EDAF}") : org.ParentId
+                            }).ToList();
+                return Json(new { msg = "", code = 0, data = list, count = list.ToList().Count }, JsonRequestBehavior.AllowGet);
             }
             else { return baseCtrler.SJson("非法操作"); }
         }
