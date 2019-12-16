@@ -1,0 +1,75 @@
+﻿<script>
+    //执行渲染\
+    var table;
+    $(function (){
+         layui.use('table', function () {
+            table = layui.table;
+            table.render({
+                elem: '#table1'
+                 , url: '/UserRole/GetStaffRole' //数据接口
+                , limit: 5
+                , cols: [[ //表头
+                     {type:'checkbox'},
+                     { field: 'Name', title: '角色名称'},
+                     { field: 'Code', title: '角色代码'},
+                ]]
+                , page: true
+                , done: function (res, curr, count) {
+                    AjaxPostData('/UserRole/GetRoleMbll', { StaffId: $("#StaffId").val() }, function (data) {
+                        var tabledata = table.cache.table1;//嵌套循环遍历表格数据
+                        for (let tabledataindex in tabledata) {//表格数据
+                            for (let dataindex in data) {//后台返回的用户拥有角色数据，数组格式所以dataindex为下标
+                                if (tabledata[tabledataindex].Id == data[dataindex].RoleId) {//判断表格的角色id是否与用户角色对应
+                                    $("#tabledata tbody").find("tr[data-index='"+tabledataindex+"'] td input").next().click();//找到表格的多选框并选中
+                                }
+                            }
+                        }
+                    })
+                 }
+            });
+         });
+    })
+    //搜索
+    function Search1() {
+        var obj = $("#search1").serializeArray()
+        table.reload('table1', {
+            where: { Name: obj[0].value, Code: obj[1].value }
+        });
+    }
+    //保存
+    function Save() {
+        var checkdata = table.checkStatus('table1'); //test即为基础参数id对应的值
+        AjaxPost('/UserRole/Save', { data: JSON.stringify(checkdata.data), StaffId: $("#StaffId").val() }, function (res) {
+            if (res) {
+                layer.closeAll();
+                layer.msg('设置成功', { icon: 1 });
+            }
+        })
+    }
+</script>
+<div style="padding:20px;">
+    <div class="layui-row">
+        <form id="search1">
+            <div class="layui-inline">
+                <label class="layui-form-label">角色名称</label>
+                <div class="layui-input-inline" style="width: 150px;">
+                    <input type="text" name="Name" autocomplete="off" class="layui-input">
+                </div>
+            </div>
+            <div class="layui-inline">
+                <label class="layui-form-label">角色代码</label>
+                <div class="layui-input-inline" style="width: 150px;">
+                    <input type="text" name="Code" autocomplete="off" class="layui-input">
+                </div>
+            </div>
+            <div class="layui-inline">
+                <button type="button" class="layui-btn" onclick="Search1()"><i class="layui-icon layui-icon-search"></i></button>
+                <button type="button" class="layui-btn" onclick="Save()">保存</button>
+                <input type="hidden" name="StaffId" value="@ViewBag.Id" id="StaffId" />
+            </div>
+        </form>
+    </div>
+    <div class="layui-row" style="margin-top:15px;" id="tabledata">
+        <table id="table1" class="layui-hide" lay-filter="table1"></table>
+    </div>
+</div>

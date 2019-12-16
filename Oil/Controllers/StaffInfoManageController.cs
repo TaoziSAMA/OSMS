@@ -135,7 +135,7 @@ namespace Oil.Controllers
                                 Code = org.Code,
                                 Leve = org.Leve,
                                 lay_is_isChecked = true,
-                                Pid = org.ParentId == null ? new Guid("{A7243447-F9AD-4A93-8C3B-464B9389EDAF}") : org.ParentId
+                                ParentId = org.ParentId == null ? new Guid("{A7243447-F9AD-4A93-8C3B-464B9389EDAF}") : org.ParentId
                             }).ToList();
                 return Json(new { msg = "", code = 0, data = list, count = list.ToList().Count }, JsonRequestBehavior.AllowGet);
             }

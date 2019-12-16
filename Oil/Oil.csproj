@@ -139,6 +139,7 @@
     <Compile Include="Controllers\MainPageController.cs" />
     <Compile Include="Controllers\OrgManageController.cs" />
     <Compile Include="Controllers\StaffInfoManageController.cs" />
+    <Compile Include="Controllers\UserRoleController.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
@@ -722,6 +723,8 @@
     <Content Include="Views\StaffInfoManage\GetJob.cshtml" />
     <Content Include="Views\OrgManage\Index.cshtml" />
     <Content Include="Views\OrgManage\AddOrEdit.cshtml" />
+    <Content Include="Views\UserRole\Index.cshtml" />
+    <Content Include="Views\UserRole\Edit.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

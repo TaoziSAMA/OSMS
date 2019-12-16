@@ -36,14 +36,14 @@
                     , idField: 'Id'
                     , url: '/OrgManage/GetList'
                 , cellMinWidth: 120
+                ,cellMaxWidth:300
                 , isOpenDefault: true
                     , treeId: 'Id'//树形id字段名称
                     , treeUpId: 'ParentId'//树形父id字段名称
                     , treeShowName: 'Name'//以树形式显示的字段
                     , cols: [[
-                    { type: 'numbers' },
                     //{ type: 'checkbox' },
-                     { field: 'Name', title: '组织机构名称' },
+                     { field: 'Name',width:200, title: '组织机构名称' },
                      { field: 'Code', title: '代码' },
                      { field: 'Leve', title: '区域级别', templet: function (d) { return GetLeve(d.Leve) } },
                      {
@@ -65,12 +65,15 @@
                 if (data.Leve == 3) {
                     layer.alert('无法在最底层机构添加子机构', { icon: 2 })
                 } else {
-                    data.ParentId = null;//标记为添加
+                    data.IsDel = false;//标记为添加
                     AjaxHTML('/OrgManage/AddOrEdit', data, function (data) {
                         LayerHtml('添加一个子机构', data);
                     })
                 }
             } else if (obj.event === 'edit') {
+
+                data.IsDel = true;//标记为修改
+                console.log(data)
                 AjaxHTML('/OrgManage/AddOrEdit', data, function (data) {
                     
                     LayerHtml('编辑机构', data);

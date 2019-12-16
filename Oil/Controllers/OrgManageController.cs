@@ -41,6 +41,8 @@ namespace Oil.Controllers
                             Name = org.Name,
                             Code = org.Code,
                             Leve = org.Leve,
+                            CreateTime=org.CreateTime,
+                            IsDel=org.IsDel,
                             lay_is_isChecked = true,
                             ParentId = org.ParentId == null ? new Guid("{A7243447-F9AD-4A93-8C3B-464B9389EDAF}") : org.ParentId
                         }).ToList();
@@ -52,7 +54,7 @@ namespace Oil.Controllers
         {
             ViewBag.type = "Add";
             info.Leve = info.Leve + 1;
-            if (info.ParentId != null)
+            if (info.IsDel)
             {
                 ViewBag.type = "Edit";
             }
