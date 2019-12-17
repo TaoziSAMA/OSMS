@@ -1,0 +1,72 @@
+﻿
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>Index</title>
+    <link href="~/layuiadmin/layui/css/layui.css" rel="stylesheet" />
+    <link href="~/treetable-lay/module/treetable-lay/treetable.css" rel="stylesheet" />
+    <script src="~/Scripts/jquery-3.3.1.js"></script>
+    <script src="~/layuiadmin/layui/layui.js"></script>
+    <script src="~/treetable-lay/module/treetable-lay/treetable.js"></script>
+    <script src="~/Scripts/helper.js"></script>
+</head>
+<body>
+    <script>
+        //执行渲染\
+        var table;
+        var renderTable;
+        layui.config({
+            base: '../treetable-lay/module/'
+        }).extend({
+            treetable: 'treetable-lay/treetable'
+        }).use('treetable', function () {
+            table = layui.table;
+            var treetable = layui.treetable;
+            // 渲染表格
+            renderTable = function () {
+                treetable.render({
+                    treeColIndex: 0,
+                    treeSpid: '00000000-0000-0000-0000-000000000000',
+                    treeIdName: 'Id',
+                    treePidName: 'ParentId',
+                    treeDefaultClose: true,
+                    treeLinkage: false,
+                    elem: '#table',
+                    url: '/SystemResourceModule/GetList',
+                    page: false,
+                    cols: [[
+                        //{ type: 'numbers' },
+                        //{ type: 'checkbox' },
+                        { field: 'Name', title: '资源模块名' },
+                        { field: 'Code', title: '代码' },
+                        { field: 'Url', title: '链接' },
+                        { field: 'Type', title: '类型', templet: function (d) { return d.Type == 0 ? '<p style="color:black">菜单</p>' : '<p style="color:cadetblue">按钮</p>' } }
+                    ]],
+                });
+            }
+            renderTable();
+        });
+        //刷新
+    </script>
+    <div class="layui-fluid" style="padding:12px">
+        <div class="layui-row">
+            <div class="layui-card">
+                <div class="layui-card-header">
+                    <h3>系统资源模块</h3>
+                </div>
+                <div class="layui-card-body" style="padding-top:0px">
+                    <div class="layui-row">
+                        <table id="table" class="layui-table" lay-filter="table"></table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

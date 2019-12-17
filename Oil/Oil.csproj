@@ -139,6 +139,7 @@
     <Compile Include="Controllers\MainPageController.cs" />
     <Compile Include="Controllers\OrgManageController.cs" />
     <Compile Include="Controllers\StaffInfoManageController.cs" />
+    <Compile Include="Controllers\SystemResourceModuleController.cs" />
     <Compile Include="Controllers\UserRoleController.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
@@ -673,8 +674,6 @@
     <Content Include="layuiadmin\tpl\system\theme.html" />
     <Content Include="layuiadmin\tpl\system\说明.txt" />
     <Content Include="layuiadmin\tpl\说明.txt" />
-    <Content Include="layuiadmin\treetable-lay\treetable.css" />
-    <Content Include="layuiadmin\treetable-lay\treetable.js" />
     <Content Include="Scripts\bootstrap.js" />
     <Content Include="Scripts\bootstrap.min.js" />
     <Content Include="layuiadmin\json\table\data.json" />
@@ -704,6 +703,10 @@
     <Content Include="Scripts\jquery.validate.unobtrusive.js" />
     <Content Include="Scripts\jquery.validate.unobtrusive.min.js" />
     <Content Include="Scripts\modernizr-2.8.3.js" />
+    <Content Include="treetable-lay\module\treetable-lay\treetable.css" />
+    <Content Include="treetable-lay\module\treetable-lay\treetable.js" />
+    <Content Include="treetable-lay\module\treeTable\treeTable.css" />
+    <Content Include="treetable-lay\module\treeTable\treeTable.js" />
     <Content Include="Web.config" />
     <Content Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
@@ -725,6 +728,7 @@
     <Content Include="Views\OrgManage\AddOrEdit.cshtml" />
     <Content Include="Views\UserRole\Index.cshtml" />
     <Content Include="Views\UserRole\Edit.cshtml" />
+    <Content Include="Views\SystemResourceModule\Index.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
