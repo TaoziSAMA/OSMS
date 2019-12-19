@@ -27,8 +27,8 @@ namespace Oil.AppCode
                 //filterContext.Controller.HttpContext.Redirect("/Home/Login", false);
                 //filterContext.RequestContext.HttpContext.RedirectLocal("/Home/Login");
                 //RedirectToAction("Login", "Home");
-                filterContext.Result = new RedirectResult("/Login/Index");
-                //filterContext.Result = new RedirectToRouteResult(new RouteValueDictionary(new { controller = "Login", action = "Index", area = string.Empty }));
+                //filterContext.Result = new RedirectResult("/Login/Index");
+                filterContext.Result = new RedirectToRouteResult(new RouteValueDictionary(new { controller = "Login", action = "Index", area = string.Empty }));
                 filterContext.Result = new EmptyResult();
 
             }

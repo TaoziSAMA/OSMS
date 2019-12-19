@@ -1,0 +1,62 @@
+﻿<script>
+    //执行渲染\
+    var table;
+    var renderTable;
+    layui.use('treetable', function () {
+        table = layui.table;
+        var treetable = layui.treetable;
+        // 渲染表格
+        renderTable = function () {
+            treetable.render({
+                treeColIndex: 1,
+                treeSpid: '00000000-0000-0000-0000-000000000000',
+                treeIdName: 'Id',
+                treePidName: 'ParentId',
+                treeDefaultClose: true,
+                treeLinkage: false,
+                elem: '#table1',
+                url: '/SystemResourceModule/GetList',
+                page: false,
+                cols: [[
+                    //{ type: 'numbers' },
+                    { type: 'checkbox' },
+                    { field: 'Name', title: '资源模块名' },
+                    { field: 'Code', title: '代码' },
+                    { field: 'Type', title: '类型', templet: function (d) { return d.Type == 0 ? '<p style="color:black">菜单</p>' : '<p style="color:cadetblue">按钮</p>' } }
+                ]]
+                , done: function (res, curr, count) {
+                    AjaxPostData('/RoleAuthority/GetRoleMbll', { RoleId: $("#RoleId").val() }, function (data) {
+                        var tabledata = table.cache.table1;
+                        for (let tabledataindex in tabledata) {
+                            for (let dataindex in data) {
+                                if (tabledata[tabledataindex].Id == data[dataindex].ResourceModuleId) {
+                                    $("#tabledata tbody").find("tr[data-index='" + tabledataindex + "'] td input").next().click();
+                                }
+                            }
+                        }
+                    })
+                }
+            });
+        }
+        renderTable();
+    });
+    //保存
+    function Save() {
+        var checkdata = table.checkStatus('table1'); //test即为基础参数id对应的值
+        AjaxPost('/RoleAuthority/SaveAuthorityList', { data: JSON.stringify(checkdata.data), RoleId: $("#RoleId").val() }, function (data) {
+            if (data) {
+                layer.closeAll();
+                layer.msg('设置成功', { icon: 1 });
+            }
+        })
+    }
+</script>
+<div style="padding:20px;">
+    <div class="layui-inline">
+        <button type="button" class="layui-btn" onclick="Save()">保存</button>
+        <input type="hidden" name="RoleId" value="@ViewBag.Id" id="RoleId" />
+    </div>
+    <div class="layui-row" style="margin-top:15px;" id="tabledata">
+        <table id="table1" class="layui-table" lay-filter="table1"></table>
+    </div>
+</div>

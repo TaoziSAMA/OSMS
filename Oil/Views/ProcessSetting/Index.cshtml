@@ -1,0 +1,173 @@
+﻿@using Oil.Models;
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>Index</title>
+    <link href="~/layuiadmin/layui/css/layui.css" rel="stylesheet" />
+    <script src="~/Scripts/jquery-3.3.1.js"></script>
+    <script src="~/layuiadmin/layui/layui.js"></script>
+    <script src="~/Scripts/helper.js"></script>
+</head>
+<body>
+    <script>
+    //执行渲染\
+    var table;
+    $(function () {
+        layui.use(['table', 'form'], function () {
+            table = layui.table;
+            var form = layui.form; //只有执行了这一步，部分表单元素才会自动修饰成功
+            table.render({
+                elem: '#table'
+                , url: '/ProcessSetting/GetList' //数据接口
+                , cols: [[ //表头
+                    { field: 'JobCode', title: '职位代码' },
+                    { field: 'AreaLeve', title: '区域级别', templet: function (d) { return GetLeve(d.AreaLeve) } },
+                    { field: 'Discrible', title: '操作对象描述', },
+                    { field: 'Order', title: '发起或审批顺序' },
+                    { field: 'ExecuteMethod', title: '执行方法Code', },
+                    //{ field: 'Id', title: '', align: 'center', toolbar: '#barEdit' },
+                    {
+
+                            field: 'Id', title: '', templet: function (d) {
+                            var button;
+                            console.log(table.cache.table.length)
+                            button = '<div>'
+                            if ('@ViewBag.edit') { button += '<a class="layui-btn layui-btn-sm" lay-event="edit">修改</a>' }
+                            if ('@ViewBag.del') { button += '<a class="layui-btn layui-btn-danger layui-btn-sm" lay-event="del">删除</a> ' }
+                            if (d.Order != 1) {
+                                if ('@ViewBag.up') { button += '<a class="layui-btn layui-btn-sm" lay-event="up"><i class="layui-icon layui-icon-up"></i>上移</a> ' }
+                            }
+
+                            if (d.Order != table.cache.table.length) {
+                                if ('@ViewBag.down') { button += '<a class="layui-btn layui-btn-sm" lay-event="down"><i class="layui-icon layui-icon-down"></i>下移</a>' }
+                            }
+                            button += '</div> '
+                            return button;
+                        }
+                    }
+                ]]
+            });//默认执行
+            Search();
+
+            //绑定菜单
+            table.on('tool(table)', function (obj) {
+                var data = obj.data;
+                console.log(data)
+                if (obj.event === 'edit') {
+                    AjaxHTML('/ProcessSetting/AddOrEdit', data, function (data) {
+                        LayerHtml('编辑流程', data);
+                    })
+                }
+                if (obj.event === 'del') {
+                    layer.confirm('确定要删除流程项吗？', {
+                        btn: ['确定', '取消'] //按钮
+                    }, function () {
+                        AjaxPost('/ProcessSetting/Del', data, function (data) {
+                            if (data) {
+                                layer.msg('删除成功', { icon: 1 })
+                                Search();
+                            }
+                        })
+                    });
+                }
+                if (obj.event === 'up') {
+                    AjaxPost('/ProcessSetting/Move?type=up', data, function (data) {
+                        if (data) {
+                            layer.msg('操作成功', { icon: 1 })
+                            Search();
+                        }
+                    })
+                }
+                if (obj.event === 'down') {
+                    AjaxPost('/ProcessSetting/Move?type=down', data, function (data) {
+                        if (data) {
+                            layer.msg('操作成功', { icon: 1 })
+                            Search();
+                        }
+                    })
+                }
+            });
+            form.render();
+        });
+    })
+    function Search() {
+        var obj = $("#search").serializeArray()
+        table.reload('table', {
+            where: { ProcessItemId: obj[0].value, JobCode: obj[1].value, AreaLeve: obj[2].value }
+            // ,page: {
+            // curr: 1 //重新从第 1 页开始
+            //}
+        });
+    }
+
+    //添加
+    function Add() {
+        AjaxHTML('/ProcessSetting/AddOrEdit', { ProcessItemId: $("#ProcessItemId option:selected").val() }, function (data) {
+            LayerHtml('添加流程', data);
+        })
+    }
+    </script>
+    <div class="layui-fluid" style="padding: 12px">
+        <div class="layui-row">
+            <div class="layui-card">
+                <div class="layui-card-header">
+                    <h3>流程设置</h3>
+                </div>
+                <div class="layui-card-body">
+                    <div class="layui-col-md10">
+                        <form class="layui-form" id="search">
+                            <div class="layui-inline layui-col-md4">
+                                <label class="layui-form-label">流程类型</label>
+                                <div class="layui-input-block">
+                                    <select name="ProcessItemId" id="ProcessItemId" lay-verify="required">
+                                        @foreach (var Job in ViewBag.ProitemList as List<ProcessItem>)
+                                        {
+                                            <option value="@Job.Id">@Job.Discrible</option>
+                                        }
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="layui-inline">
+                                <label class="layui-form-label">职位代码</label>
+                                <div class="layui-input-inline" style="width: 130px;">
+                                    <input type="text" name="JobCode" autocomplete="off" class="layui-input">
+                                </div>
+                            </div>
+                            <div class="layui-inline layui-col-md3">
+                                <label class="layui-form-label">区域级别</label>
+                                <div class="layui-input-block">
+                                    <select name="AreaLeve" lay-verify="required">
+                                        <option value="-1">全部</option>
+                                        <option value="0">总部</option>
+                                        <option value="1">大区</option>
+                                        <option value="2">区域</option>
+                                        <option value="3">油站</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="layui-inline">
+                                <button type="button" class="layui-btn" onclick="Search()"><i class="layui-icon layui-icon-search"></i></button>
+                            </div>
+
+                        </form>
+                    </div>
+                    <div class="layui-col-md1 layui-col-md-offset1" style="text-align:center;">
+                        @if (ViewBag.add != null)
+                        {<button class="layui-btn layui-btn-normal" onclick="Add()"><i class="layui-icon layui-icon-add-1"></i>  </button>}
+                    </div>
+                    <div class="layui-row">
+                        <table id="table" class="layui-hide" lay-filter="table"></table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</body>
+</html>

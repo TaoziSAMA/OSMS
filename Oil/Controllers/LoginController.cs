@@ -84,16 +84,16 @@ namespace Oil.Controllers
                         1,
                         email,//存储的用户信息
                         DateTime.Now,
-                        DateTime.Now.AddMinutes(30),
-                        false,
+                        DateTime.Now.AddMinutes(60),
+                        true,
                         Request.UserHostAddress
                         );
                     FormsAuthenticationTicket ticketPwd = new FormsAuthenticationTicket(
                         1,
                         pwd,//存储的用户信息
                         DateTime.Now,
-                        DateTime.Now.AddMinutes(30),
-                        false,
+                        DateTime.Now.AddMinutes(60),
+                        true,
                         Request.UserHostAddress
                         );
                     // 加密票证

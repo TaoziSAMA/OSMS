@@ -138,6 +138,8 @@
     <Compile Include="Controllers\LoginController.cs" />
     <Compile Include="Controllers\MainPageController.cs" />
     <Compile Include="Controllers\OrgManageController.cs" />
+    <Compile Include="Controllers\ProcessSettingController.cs" />
+    <Compile Include="Controllers\RoleAuthorityController.cs" />
     <Compile Include="Controllers\StaffInfoManageController.cs" />
     <Compile Include="Controllers\SystemResourceModuleController.cs" />
     <Compile Include="Controllers\UserRoleController.cs" />
@@ -729,6 +731,11 @@
     <Content Include="Views\UserRole\Index.cshtml" />
     <Content Include="Views\UserRole\Edit.cshtml" />
     <Content Include="Views\SystemResourceModule\Index.cshtml" />
+    <Content Include="Views\RoleAuthority\Index.cshtml" />
+    <Content Include="Views\RoleAuthority\AddOrEdit.cshtml" />
+    <Content Include="Views\RoleAuthority\SetAuthority.cshtml" />
+    <Content Include="Views\ProcessSetting\Index.cshtml" />
+    <Content Include="Views\ProcessSetting\AddOrEdit.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
