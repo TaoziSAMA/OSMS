@@ -109,7 +109,6 @@ namespace Oil.Controllers
                             jobInfo.UpdateTime = DateTime.Now;
                             db.SaveChanges();
                         }
-
                     }
                 }
                 return baseCtrler.SJson("true");
