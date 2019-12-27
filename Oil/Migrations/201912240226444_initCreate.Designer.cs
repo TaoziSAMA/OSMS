@@ -13,7 +13,7 @@ namespace Oil.Migrations
         
         string IMigrationMetadata.Id
         {
-            get { return "201912110841521_initCreate"; }
+            get { return "201912240226444_initCreate"; }
         }
         
         string IMigrationMetadata.Source

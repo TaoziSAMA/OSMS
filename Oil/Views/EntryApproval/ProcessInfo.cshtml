@@ -1,0 +1,40 @@
+﻿<script>
+    //执行渲染\
+    var table;
+        layui.use(['table'], function () {
+            table = layui.table;
+            table.render({
+                elem: '#table1'
+               , url: '/EntryApproval/GetProcessInfo?Id=@ViewBag.Id' //数据接口
+               , limit: 20
+               , cols: [[ //表头
+                   {
+                       field: 'Discrible', title: '[区域]职位 姓名', templet: function (d) {
+                           return d.Discrible.split('=>')[0];
+                       }
+                   },
+                   {
+                       field: 'Result', title: '处理流程结果', templet: function (d) {
+                           var icon;
+                           if (d.WhetherToExecute==true&d.Result==true) {
+                               icon = '<i class="layui-icon layui-icon-ok-circle" style="font-size: 30px; color: Green;"></i>'
+                           }else if (d.WhetherToExecute==false&d.Result==false) {
+                               icon = '<i class="layui-icon layui-icon-download-circle" style="font-size: 30px; color: #1E9FFF;"></i>'
+                           }else if (d.WhetherToExecute == false & d.Result == true) {
+                               icon = '<i class="layui-icon  layui-icon-refresh" style="font-size: 30px; color: #1E9FFF;"></i>'
+                           }
+                           return icon
+                       }
+                   },
+               ]]
+            });
+        });
+</script>
+<div style="padding:20px;height:300px">
+    <div class="layui-row">
+        <label class="layui-label">入职申请流程(@ViewBag.No)</label>
+    </div>
+    <div class="layui-row">
+        <table id="table1" class="layui-hide" lay-filter="table1"></table>
+    </div>
+</div>

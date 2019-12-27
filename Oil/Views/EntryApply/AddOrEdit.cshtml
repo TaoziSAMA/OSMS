@@ -1,0 +1,434 @@
+﻿@using Oil.Models;
+@model Entry
+<script>
+    layui.use(['form', 'laydate', 'table'], function () {
+        var form = layui.form;
+        var table = layui.table;
+        //监听提交
+        form.on('submit(formDemo)', function (data) {
+            AjaxPost('/EntryApply/Save', data.field, function (data) {
+                if (data) {
+                    layer.closeAll();
+                    layer.msg('保存成功', { icon: 1 });
+                    Search();
+                }
+            })
+            return false; //阻止表单跳转。如果需要表单跳转，去掉这段即可。
+        });
+        form.val("formData", {
+            "Id": "@Model.Id",
+            "StaffName": "@Model.StaffName",
+            "Sex": "@Model.Sex",
+            "BirthDay": "@ViewBag.BirthDay",
+            "MaritalStatus": "@Model.MaritalStatus",
+            "Height": "@Model.Height",
+            "HighestEducation": "@Model.HighestEducation",
+            "Major": "@Model.Major",
+            "ForeginLanguageAptitude": "@Model.ForeginLanguageAptitude",
+            "IDNumber": "@Model.IDNumber",
+            "NativePlace": "@Model.NativePlace",
+            "Address": "@Model.Address",
+            "Email": "@Model.Email",
+            "Tel": "@Model.Tel",
+            "HaseMedicalHistory": "@Model.HaseMedicalHistory",
+            "MedicalHistoryComment": "@Model.MedicalHistoryComment",
+            "HobbiesAndSpeciality": "@Model.HobbiesAndSpeciality",
+            "EducationalExperience1Date": "@ViewBag.EducationalExperience1Date",
+            "EducationalExperience1SchoolName": "@Model.EducationalExperience1SchoolName",
+            "EducationalExperience1Major": "@Model.EducationalExperience1Major",
+            "EducationalExperience1Certificate": "@Model.EducationalExperience1Certificate",
+            "EducationalExperience2Date": "@ViewBag.EducationalExperience2Date",
+            "EducationalExperience2SchoolName": "@Model.EducationalExperience2SchoolName",
+            "EducationalExperience2Major": "@Model.EducationalExperience2Major",
+            "EducationalExperience2Certificate": "@Model.EducationalExperience2Certificate",
+            "EducationalExperience3Date": "@ViewBag.EducationalExperience3Date",
+            "EducationalExperience3SchoolName": "@Model.EducationalExperience3SchoolName",
+            "EducationalExperience3Major": "@Model.EducationalExperience3Major",
+            "EducationalExperience3Certificate": "@Model.EducationalExperience3Certificate",
+            "EducationalExperience4Date": "@ViewBag.EducationalExperience4Date",
+            "EducationalExperience4SchoolName": "@Model.EducationalExperience4SchoolName",
+            "EducationalExperience4Major": "@Model.EducationalExperience4Major",
+            "EducationalExperience4Certificate": "@Model.EducationalExperience4Certificate",
+            "FamilyStatus1Name": "@Model.FamilyStatus1Name",
+            "FamilyStatus1Appellation": "@Model.FamilyStatus1Appellation",
+            "FamilyStatus1Company": "@Model.FamilyStatus1Company",
+            "FamilyStatus1Tel": "@Model.FamilyStatus1Tel",
+            "FamilyStatus2Name": "@Model.FamilyStatus2Name",
+            "FamilyStatus2Appellation": "@Model.FamilyStatus2Appellation",
+            "FamilyStatus2Company": "@Model.FamilyStatus2Company",
+            "FamilyStatus2Tel": "@Model.FamilyStatus2Tel",
+            "EmergencyContactName": "@Model.EmergencyContactName",
+            "EmergencyContactTel": "@Model.EmergencyContactTel",
+            "EmergencyContactEelationShipWithMe": "@Model.EmergencyContactEelationShipWithMe",
+            "JobId": "@Model.JobId",
+            "JobName": "@ViewBag.JobName",
+            "Title": "@Model.Title",
+            "Organization_Id": "@Model.Organization_Id",
+            "Organization_Name": "@ViewBag.Organization_Name",
+            "SupervisorComments": "@Model.SupervisorComments",
+            "ProbationarySalary": "@Model.ProbationarySalary",
+            "CorrectSalary": "@Model.CorrectSalary",
+            "WorkNumber": "@Model.WorkNumber",
+            "EntryDate": "@ViewBag.EntryDate",
+            "BirthCertificatePhoto": "@Model.BirthCertificatePhoto",
+            "RegistrationPhoto": "@Model.RegistrationPhoto",
+            "BankCardNumber": "@Model.BankCardNumber",
+            "CreateStaffeId": "@Model.CreateStaffeId",
+            "No": "@Model.No",
+            "StaffNo": "@Model.StaffNo",
+            "type": "@ViewBag.type",
+        })
+
+        form.render();
+        var laydate = layui.laydate;
+        //年月选择器
+        laydate.render({
+            elem: '#date1'
+        });
+        laydate.render({
+            elem: '#date2'
+        });
+        laydate.render({
+            elem: '#yearmon1'
+            , range: '~'
+        });
+        laydate.render({
+            elem: '#yearmon2'
+           , range: '~'
+        });
+        laydate.render({
+            elem: '#yearmon3'
+           , range: '~'
+        });
+        laydate.render({
+            elem: '#yearmon4'
+           , range: '~'
+        });
+    });
+    //打开添加机构
+    function ShowOrg() {
+        AjaxHTML('/EntryApply/GetOrganizationStructure', null, function (data) {
+            LayerHtmlSet('选择机构', data, 700, 500)
+        })
+    }
+    //打开添加机构
+    function ShowJob() {
+        AjaxHTML('/EntryApply/GetJob', null, function (data) {
+            LayerHtmlSet('选择职位', data, 700, 500)
+        })
+    }
+</script>
+<style>
+    .tableset th {
+        text-align: center;
+    }
+
+    .tableset tbody {
+        text-align: center;
+    }
+</style>
+<div style="padding:20px;">
+    <form class="layui-form" id="form" lay-filter="formData">
+        @*第零行*@
+        <div class="layui-form-item">
+            <div class="layui-inline">
+                <label class="layui-form-label">申请单号</label>
+                <div class="layui-input-inline">
+                    <input type="text" name="No" lay-verType="tips" autocomplete="off" class="layui-input" readonly="readonly">
+                </div>
+            </div>
+            <div class="layui-inline">
+                <label class="layui-form-label">员工工号</label>
+                <div class="layui-input-inline">
+                    <input type="text" name="WorkNumber" lay-verType="tips" autocomplete="off" class="layui-input" readonly="readonly">
+                </div>
+            </div>
+        </div>
+        @*第一行*@
+        <div class="layui-form-item">
+            <div class="layui-inline">
+                <label class="layui-form-label">员工姓名</label>
+                <div class="layui-input-inline">
+                    <input type="text" name="StaffName" lay-verify="required" lay-verType="tips" autocomplete="off" class="layui-input">
+                </div>
+            </div>
+            <div class="layui-inline">
+                <label class="layui-form-label">员工性别</label>
+                <div class="layui-input-inline">
+                    <input type="radio" name="Sex" value="True" title="男" checked="">
+                    <input type="radio" name="Sex" value="False" title="女">
+                </div>
+            </div>
+            <div class="layui-inline">
+                <label class="layui-form-label">出生日期</label>
+                <div class="layui-input-inline">
+                    <input type="text" name="BirthDay" class="layui-input" id="date1" lay-verify="required" lay-verType="tips" placeholder="yyyy-MM-dd" readonly="readonly">
+                </div>
+            </div>
+            <div class="layui-inline">
+                <label class="layui-form-label">婚姻状况</label>
+                <div class="layui-input-inline">
+                    <input type="radio" name="MaritalStatus" value="True" title="已婚" checked="">
+                    <input type="radio" name="MaritalStatus" value="False" title="未婚">
+                </div>
+            </div>
+        </div>
+        @*第二行*@
+        <div class="layui-form-item">
+            <div class="layui-inline">
+                <label class="layui-form-label">身高（CM）</label>
+                <div class="layui-input-inline">
+                    <input type="text" name="Height" lay-verify="required" lay-verType="tips" autocomplete="off" class="layui-input">
+                </div>
+            </div>
+            <div class="layui-inline">
+                <label class="layui-form-label">最高学历</label>
+                <div class="layui-input-inline">
+                    <select name="HighestEducation" lay-verify="required" lay-verType="tips">
+                        <option value="-1"></option>
+                        <option value="1">初中</option>
+                        <option value="2">高中/中专</option>
+                        <option value="3">大专</option>
+                        <option value="4">本科</option>
+                        <option value="5">研究生</option>
+                        <option value="6">其它
+                        <option>
+                    </select>
+                </div>
+            </div>
+            <div class="layui-inline">
+                <label class="layui-form-label">专业</label>
+                <div class="layui-input-inline">
+                    <input type="text" name="Major" lay-verify="required" lay-verType="tips" autocomplete="off" class="layui-input">
+                </div>
+            </div>
+            <div class="layui-inline">
+                <label class="layui-form-label">职称</label>
+                <div class="layui-input-inline">
+                    <input type="text" name="Title" lay-verify="required" lay-verType="tips" autocomplete="off" class="layui-input">
+                </div>
+            </div>
+        </div>
+        @*第三行*@
+        <div class="layui-form-item">
+            <div class="layui-inline">
+                <label class="layui-form-label">外语能力</label>
+                <div class="layui-input-inline">
+                    <input type="text" name="ForeginLanguageAptitude" lay-verify="required" lay-verType="tips" autocomplete="off" class="layui-input">
+                </div>
+            </div>
+            <div class="layui-inline">
+                <label class="layui-form-label">身份证号</label>
+                <div class="layui-input-inline">
+                    <input type="text" name="IDNumber" lay-verify="required|identity" lay-verType="tips" autocomplete="off" class="layui-input">
+                </div>
+            </div>
+            <div class="layui-inline">
+                <label class="layui-form-label">籍贯</label>
+                <div class="layui-input-inline">
+                    <input type="text" name="NativePlace" lay-verify="required" lay-verType="tips" autocomplete="off" class="layui-input">
+                </div>
+            </div>
+            <div class="layui-inline">
+                <label class="layui-form-label">联系地址</label>
+                <div class="layui-input-inline">
+                    <input type="text" name="Address" lay-verify="required" lay-verType="tips" autocomplete="off" class="layui-input">
+                </div>
+            </div>
+        </div>
+        @*第四行*@
+        <div class="layui-form-item">
+            <div class="layui-inline">
+                <label class="layui-form-label">联系电话</label>
+                <div class="layui-input-inline">
+                    <input type="text" name="Tel" lay-verify="required|phone" lay-verType="tips" autocomplete="off" class="layui-input">
+                </div>
+            </div>
+            <div class="layui-inline">
+                <label class="layui-form-label">邮箱</label>
+                <div class="layui-input-inline">
+                    <input type="text" name="Email" lay-verify="required|email" lay-verType="tips" autocomplete="off" class="layui-input">
+                </div>
+            </div>
+            <div class="layui-inline">
+                <label class="layui-form-label">是否有遗传病史</label>
+                <div class="layui-input-inline">
+                    <input type="radio" name="HaseMedicalHistory" value="True" title="是" checked="">
+                    <input type="radio" name="HaseMedicalHistory" value="False" title="否">
+                </div>
+            </div>
+            <div class="layui-inline">
+                <label class="layui-form-label">请注明</label>
+                <div class="layui-input-inline">
+                    <input type="text" name="MedicalHistoryComment" lay-verType="tips" autocomplete="off" class="layui-input">
+                </div>
+            </div>
+        </div>
+        @*第五行*@
+        <div class="layui-form-item">
+            <div class="layui-inline">
+                <label class="layui-form-label">职位</label>
+                <div class="layui-input-inline">
+                    <input type="text" name="JobName" lay-verify="required" lay-verType="tips" autocomplete="off" class="layui-input" readonly="readonly" onclick="ShowJob()">
+                </div>
+            </div>
+            <div class="layui-inline">
+                <label class="layui-form-label">机构</label>
+                <div class="layui-input-inline">
+                    <input type="text" name="Organization_Name" lay-verify="required" lay-verType="tips" autocomplete="off" class="layui-input" readonly="readonly" onclick="ShowOrg()">
+                </div>
+            </div>
+            <div class="layui-inline">
+                <label class="layui-form-label">个人兴趣爱好及专长</label>
+                <div class="layui-input-inline">
+                    <input type="text" name="HobbiesAndSpeciality" lay-verType="tips" autocomplete="off" class="layui-input">
+                </div>
+            </div>
+        </div>
+        @*第六行*@
+        <div class="layui-form-item">
+            <div class="layui-inline" style="width:100%">
+                <div class="layui-table-body layui-table-main">
+                    <span style="margin-left: 30px; font-weight: bold;">学历及专业训练</span>
+                    <table cellspacing="0" cellpadding="0" class="layui-table tableset" id="oiltable">
+                        <tbody>
+                            <tr style="background-color: #f2f2f2">
+                                <th class="layui-unselect">学历</th>
+                                <th class="layui-unselect">起止时间</th>
+                                <th class="layui-unselect">学校名称</th>
+                                <th class="layui-unselect">专业</th>
+                                <th class="layui-unselect">证书</th>
+                            </tr>
+                            <tr>
+                                <td><label class="layui-label">高中（初中）中专</label></td>
+                                <td><input type="text" class="layui-input" id="yearmon1" placeholder="-" name="EducationalExperience1Date" value=""></td>
+                                <td><input type="text" class="layui-input" lay-verType="tips" name="EducationalExperience1SchoolName" value="" /></td>
+                                <td><input type="text" class="layui-input" lay-verType="tips" name="EducationalExperience1Major" value="" /></td>
+                                <td><input type="text" class="layui-input" lay-verType="tips" name="EducationalExperience1Certificate" value="" /></td>
+                            </tr>
+                            <tr>
+                                <td><label class="layui-label">大专/本科</label></td>
+                                <td><input type="text" class="layui-input" id="yearmon2" placeholder="-" name="EducationalExperience2Date" value=""></td>
+                                <td><input type="text" class="layui-input" lay-verType="tips" name="EducationalExperience2SchoolName" value="" /></td>
+                                <td><input type="text" class="layui-input" lay-verType="tips" name="EducationalExperience2Major" value="" /></td>
+                                <td><input type="text" class="layui-input" lay-verType="tips" name="EducationalExperience2Certificate" value="" /></td>
+                            </tr>
+                            <tr>
+                                <td><label class="layui-label">研究生</label></td>
+                                <td><input type="text" class="layui-input" id="yearmon3" placeholder="-" name="EducationalExperience3Date" value=""></td>
+                                <td><input type="text" class="layui-input" lay-verType="tips" name="EducationalExperience3SchoolName" value="" /></td>
+                                <td><input type="text" class="layui-input" lay-verType="tips" name="EducationalExperience3Major" value="" /></td>
+                                <td><input type="text" class="layui-input" lay-verType="tips" name="EducationalExperience3Certificate" value="" /></td>
+                            </tr>
+                            <tr>
+                                <td><label class="layui-label">其它</label></td>
+                                <td><input type="text" class="layui-input" id="yearmon4" placeholder="-" name="EducationalExperience4Date" value=""></td>
+                                <td><input type="text" class="layui-input" lay-verType="tips" name="EducationalExperience4SchoolName" value="" /></td>
+                                <td><input type="text" class="layui-input" lay-verType="tips" name="EducationalExperience4Major" value="" /></td>
+                                <td><input type="text" class="layui-input" lay-verType="tips" name="EducationalExperience4Certificate" value="" /></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+        @*第七行*@
+        <div class="layui-form-item">
+            <div class="layui-inline" style="width:100%">
+                <div class="layui-table-body layui-table-main">
+                    <span style="margin-left: 30px; font-weight: bold;">家庭状况（只填直系亲属）</span>
+                    <table cellspacing="0" cellpadding="0" class="layui-table" id="oiltable">
+                        <tbody>
+                            <tr style="background-color: #f2f2f2">
+                                <th class="layui-unselect">姓名</th>
+                                <th class="layui-unselect">称谓</th>
+                                <th class="layui-unselect">工作单位</th>
+                                <th class="layui-unselect">联络电话</th>
+                            </tr>
+                            <tr>
+                                <td><input type="text" class="layui-input" lay-verType="tips" name="FamilyStatus1Name" value="" /></td>
+                                <td><input type="text" class="layui-input" lay-verType="tips" name="FamilyStatus1Appellation" value="" /></td>
+                                <td><input type="text" class="layui-input" lay-verType="tips" name="FamilyStatus1Company" value="" /></td>
+                                <td><input type="text" class="layui-input" lay-verType="tips" name="FamilyStatus1Tel" value="" /></td>
+                            </tr>
+                            <tr>
+                                <td><input type="text" class="layui-input" lay-verType="tips" name="FamilyStatus2Name" value="" /></td>
+                                <td><input type="text" class="layui-input" lay-verType="tips" name="FamilyStatus2Appellation" value="" /></td>
+                                <td><input type="text" class="layui-input" lay-verType="tips" name="FamilyStatus2Company" value="" /></td>
+                                <td><input type="text" class="layui-input" lay-verType="tips" name="FamilyStatus2Tel" value="" /></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+        @*第八行*@
+        <div class="layui-form-item">
+            <div class="layui-inline" style="width:100%">
+                <div class="layui-table-body layui-table-main">
+                    <span style="margin-left: 30px; font-weight: bold;">紧急联系人</span>
+                    <table cellspacing="0" cellpadding="0" class="layui-table" id="oiltable">
+                        <tbody>
+                            <tr style="height:39px">
+                                <th class="layui-unselect" style="background-color: #f2f2f2">姓名</th>
+                                <th class="layui-unselect"><input type="text" class="layui-input" lay-verType="tips" name="EmergencyContactName" value="" /></th>
+                                <th class="layui-unselect" style="background-color: #f2f2f2">联系电话</th>
+                                <th class="layui-unselect"><input type="text" class="layui-input" lay-verType="tips" name="EmergencyContactTel" value="" /></th>
+                                <th class="layui-unselect" style="background-color: #f2f2f2">与本人关系</th>
+                                <th class="layui-unselect"><input type="text" class="layui-input" lay-verType="tips" name="EmergencyContactEelationShipWithMe" value="" /></th>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+        @*第九行*@
+        <span style="margin-left: 30px; font-weight: bold;">其它信息</span>
+        <div class="layui-form-item">
+            <div class="layui-inline" style="width:100%">
+                <label class="layui-form-label">主管评语</label>
+                <div class="layui-input-block">
+                    <textarea placeholder="请输入内容" class="layui-textarea" name="SupervisorComments"></textarea>
+                </div>
+            </div>
+        </div>
+        @*第十行*@
+        <div class="layui-form-item">
+            <div class="layui-inline">
+                <label class="layui-form-label">入职日期</label>
+                <div class="layui-input-inline">
+                    <input type="text" name="EntryDate" class="layui-input" id="date2" lay-verify="required" lay-verType="tips" placeholder="yyyy-MM-dd" readonly="readonly">
+                </div>
+            </div>
+            <div class="layui-inline">
+                <label class="layui-form-label">试用期工资</label>
+                <div class="layui-input-inline">
+                    <input type="text" name="ProbationarySalary" lay-verify="required" lay-verType="tips" autocomplete="off" class="layui-input">
+                </div>
+            </div>
+            <div class="layui-inline">
+                <label class="layui-form-label">转正工资</label>
+                <div class="layui-input-inline">
+                    <input type="text" name="CorrectSalary" lay-verify="required" lay-verType="tips" autocomplete="off" class="layui-input">
+                </div>
+            </div>
+            <div class="layui-inline">
+                <label class="layui-form-label">银行卡号</label>
+                <div class="layui-input-inline">
+                    <input type="text" name="BankCardNumber" lay-verify="required" lay-verType="tips" autocomplete="off" class="layui-input">
+                </div>
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <div class="layui-input-block">
+                <input type="hidden" name="ApplyPersonId">
+                <input type="hidden" name="Id" id="Id">
+                <input type="hidden" name="JobId">
+                <input type="hidden" name="Organization_Id">
+                <input type="hidden" name="type">
+                <button class="layui-btn" lay-submit lay-filter="formDemo">保存</button>
+                <button type="reset" class="layui-btn layui-btn-primary">重置</button>
+            </div>
+        </div>
+    </form>
+</div>

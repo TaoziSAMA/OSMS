@@ -27,6 +27,9 @@ namespace Oil.Models
         public virtual DbSet<Staff> Staff { get; set; }
         public virtual DbSet<StaffRole> StaffRole { get; set; }
         public virtual DbSet<SystemResourceModule> SystemResourceModule { get; set; }
+        public virtual DbSet<View_Entry> View_Entry { get; set; }
+        public virtual DbSet<View_LeaveOfficeJ> View_LeaveOfficeJ { get; set; }
+        public virtual DbSet<View_OilMaterialOrderSP> View_OilMaterialOrderSP { get; set; }
         public virtual DbSet<View_StaffJ> View_StaffJ { get; set; }
 
         protected override void OnModelCreating(DbModelBuilder modelBuilder)
@@ -90,6 +93,64 @@ namespace Oil.Models
                 .HasMany(e => e.LoginInfo)
                 .WithRequired(e => e.Staff)
                 .WillCascadeOnDelete(false);
+
+            modelBuilder.Entity<View_Entry>()
+                .Property(e => e.Height)
+                .HasPrecision(5, 2);
+
+            modelBuilder.Entity<View_Entry>()
+                .Property(e => e.IDNumber)
+                .IsUnicode(false);
+
+            modelBuilder.Entity<View_Entry>()
+                .Property(e => e.Tel)
+                .IsFixedLength()
+                .IsUnicode(false);
+
+            modelBuilder.Entity<View_Entry>()
+                .Property(e => e.FamilyStatus1Tel)
+                .IsUnicode(false);
+
+            modelBuilder.Entity<View_Entry>()
+                .Property(e => e.FamilyStatus2Tel)
+                .IsUnicode(false);
+
+            modelBuilder.Entity<View_Entry>()
+                .Property(e => e.EmergencyContactTel)
+                .IsUnicode(false);
+
+            modelBuilder.Entity<View_Entry>()
+                .Property(e => e.No)
+                .IsUnicode(false);
+
+            modelBuilder.Entity<View_Entry>()
+                .Property(e => e.NeedExec)
+                .IsUnicode(false);
+
+            modelBuilder.Entity<View_Entry>()
+                .Property(e => e.Discrible)
+                .IsUnicode(false);
+
+            modelBuilder.Entity<View_LeaveOfficeJ>()
+                .Property(e => e.LeaveType)
+                .IsFixedLength()
+                .IsUnicode(false);
+
+            modelBuilder.Entity<View_LeaveOfficeJ>()
+                .Property(e => e.NeedExec)
+                .IsUnicode(false);
+
+            modelBuilder.Entity<View_LeaveOfficeJ>()
+                .Property(e => e.Discrible)
+                .IsUnicode(false);
+
+            modelBuilder.Entity<View_OilMaterialOrderSP>()
+                .Property(e => e.NeedExec)
+                .IsUnicode(false);
+
+            modelBuilder.Entity<View_OilMaterialOrderSP>()
+                .Property(e => e.Discrible)
+                .IsUnicode(false);
 
             modelBuilder.Entity<View_StaffJ>()
                 .Property(e => e.Status)

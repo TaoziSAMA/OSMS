@@ -126,6 +126,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AppCode\CheckResourcesFilter.cs" />
+    <Compile Include="AppCode\Execution.cs" />
     <Compile Include="AppCode\LoginFilter.cs" />
     <Compile Include="AppCode\PageItem.cs" />
     <Compile Include="App_Start\BundleConfig.cs" />
@@ -133,6 +134,8 @@
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="Controllers\BaseController.cs" />
     <Compile Include="Controllers\BasicInfoController.cs" />
+    <Compile Include="Controllers\EntryApplyController.cs" />
+    <Compile Include="Controllers\EntryApprovalController.cs" />
     <Compile Include="Controllers\Help.cs" />
     <Compile Include="Controllers\IndexController.cs" />
     <Compile Include="Controllers\LoginController.cs" />
@@ -146,9 +149,9 @@
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
-    <Compile Include="Migrations\201912110841521_initCreate.cs" />
-    <Compile Include="Migrations\201912110841521_initCreate.Designer.cs">
-      <DependentUpon>201912110841521_initCreate.cs</DependentUpon>
+    <Compile Include="Migrations\201912240226444_initCreate.cs" />
+    <Compile Include="Migrations\201912240226444_initCreate.Designer.cs">
+      <DependentUpon>201912240226444_initCreate.cs</DependentUpon>
     </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\Approver.cs" />
@@ -167,6 +170,9 @@
     <Compile Include="Models\Staff.cs" />
     <Compile Include="Models\StaffRole.cs" />
     <Compile Include="Models\SystemResourceModule.cs" />
+    <Compile Include="Models\View_Entry.cs" />
+    <Compile Include="Models\View_LeaveOfficeJ.cs" />
+    <Compile Include="Models\View_OilMaterialOrderSP.cs" />
     <Compile Include="Models\View_StaffJ.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
@@ -736,6 +742,14 @@
     <Content Include="Views\RoleAuthority\SetAuthority.cshtml" />
     <Content Include="Views\ProcessSetting\Index.cshtml" />
     <Content Include="Views\ProcessSetting\AddOrEdit.cshtml" />
+    <Content Include="Views\EntryApply\Index.cshtml" />
+    <Content Include="Views\EntryApply\AddOrEdit.cshtml" />
+    <Content Include="Views\EntryApply\GetJob.cshtml" />
+    <Content Include="Views\EntryApply\GetOrganizationStructure.cshtml" />
+    <Content Include="Views\EntryApply\ProcessInfo.cshtml" />
+    <Content Include="Views\EntryApproval\Index.cshtml" />
+    <Content Include="Views\EntryApproval\AdoptOrReject.cshtml" />
+    <Content Include="Views\EntryApproval\ProcessInfo.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
@@ -755,8 +769,8 @@
     <Content Include="Scripts\jquery-3.3.1.min.map" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Migrations\201912110841521_initCreate.resx">
-      <DependentUpon>201912110841521_initCreate.cs</DependentUpon>
+    <EmbeddedResource Include="Migrations\201912240226444_initCreate.resx">
+      <DependentUpon>201912240226444_initCreate.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>

@@ -66,5 +66,20 @@ namespace Oil.Controllers
             List<SystemResourceModule> srsDate = db.SystemResourceModule.Where(x => ResourceModuleId.Contains(x.Id)).ToList();//查询系统资源库中包含ResourceModuleId的条目
             return srsDate;
         }
+
+        //是否已经发起
+        public bool IsStart(Guid RefOrderId)
+        {
+
+            List<ProcessStepRecord> data = db.ProcessStepRecord.Where(x => x.RefOrderId == RefOrderId & x.StepOrder == 0).ToList();
+            if (data.Count > 0 && data.First().Result == true && data.First().WhetherToExecute == true)
+            {
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+        }
     }
 }

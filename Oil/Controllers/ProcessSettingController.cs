@@ -147,6 +147,7 @@ namespace Oil.Controllers
             var baseCtrler = DependencyResolver.Current.GetService<BaseController>();
             try
             {
+                //本质上下位互换
                 if (type == "up")
                 {
                     if (baseCtrler.CheckResources("SystemSettingProcessSetting_MoveUp"))
