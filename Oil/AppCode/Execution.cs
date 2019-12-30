@@ -37,10 +37,12 @@ namespace Oil.AppCode
         //分配工号
         public void FillEntryInfo(ProcessStepRecord info)
         {
-            ProcessStepRecord datapro = db.ProcessStepRecord.Where(x => x.Id == info.Id).FirstOrDefault();
-            Entry dataent = db.Entry.Where(x => x.Id == datapro.RefOrderId).FirstOrDefault();
-            Staff stadata = db.Staff.Where(x => true).OrderByDescending(x => x.No).FirstOrDefault();
-            dataent.WorkNumber = Convert.ToInt32(stadata.No) + 1 + "";
+            ProcessStepRecord datapro = db.ProcessStepRecord.Where(x => x.Id == info.Id).FirstOrDefault();//流程记录信息
+            Entry dataent = db.Entry.Where(x => x.Id == datapro.RefOrderId).FirstOrDefault();//找到入职申请记录信息
+            Staff stadata = db.Staff.Where(x => true).OrderByDescending(x => x.No).FirstOrDefault();//找到最新工号
+            dataent.WorkNumber = Convert.ToInt32(stadata.No) + 1 + "";//创建新工号
+
+            //更改记录中的工号
             Entry data = db.Entry.FirstOrDefault(x => x.Id == dataent.Id);
             data.StaffName = dataent.StaffName;  //员工姓名
             data.Sex = dataent.Sex;  //性别

@@ -127,7 +127,7 @@ namespace Oil.Controllers
         }
 
         /// <summary>
-        /// 获取最新描述
+        /// 获取最新审批状态
         /// </summary>
         /// <param name="refOrderId"></param>
         /// <param name="db"></param>

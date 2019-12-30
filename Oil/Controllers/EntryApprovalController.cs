@@ -82,7 +82,7 @@ namespace Oil.Controllers
             try
             {
                 ProcessStepRecord currentInfo = db.ProcessStepRecord.Where(x => x.Id == info.Id).First();
-                info.WhetherToExecute = true;
+                currentInfo.WhetherToExecute = true;
                 if (type == "adopt")
                 {
                     if (baseCtrler.CheckResources("ManagerDailyEntryManager_PassThrough"))
@@ -95,7 +95,7 @@ namespace Oil.Controllers
                         {
                             new Execution().FillEntryInfo(currentInfo);
                         }
-                        info.Result = true;
+                        currentInfo.Result = true;
 
                         ProcessStepRecord data = db.ProcessStepRecord.Where(x => x.Id == info.Id).OrderByDescending(x => x.StepOrder).First();
                         data.UpdateTime = DateTime.Now; //创建时间
@@ -189,7 +189,6 @@ namespace Oil.Controllers
             PageItem<ProcessStepRecord> data = new PageItem<ProcessStepRecord>();
             data.data = db.ProcessStepRecord.Where(x => x.RefOrderId == info.Id).OrderBy(x => x.StepOrder).ToList();
             return Json(data, JsonRequestBehavior.AllowGet);
-
         }
     }
 }
