@@ -142,7 +142,14 @@ namespace Oil.Controllers
             return Discribe;
         }
 
-        //获取单号
+        /// <summary>
+        /// 获取单号
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="db"></param>
+        /// <param name="fix">类型识别</param>
+        /// <param name="table">查询的表</param>
+        /// <returns></returns>
         public static string GetOrderNumber<T>(Models.OSMS db, string fix, string table)
         {
             string pirfix = fix + DateTime.Now.ToString("yyyyMMdd");
@@ -156,15 +163,21 @@ namespace Oil.Controllers
             //{
             //    return pirfix + "000001";
             //}
+
+            //对比是否存在相同数据
             List<T> count = db.Database.SqlQuery<T>(string.Format("select top 1.* from {0} where No like'{1}%' order by No desc", table, pirfix)).ToList();
             if (count.Any())
             {
+                //若存在找出最大的单号
                 string maxNumber = db.Database.SqlQuery<string>(string.Format("select top 1.No from {0} where No like'{1}%' order by No desc", table, pirfix)).Max();
+                //截取后六位区别码
                 string endStr = maxNumber.Substring(pirfix.Length, maxNumber.Length - pirfix.Length);
+                //区别码加一
                 return pirfix + (int.Parse(endStr) + 1).ToString("000000");
             }
             else
             {
+                //若不存在默认为 000001
                 return pirfix + "000001";
             }
         }
@@ -177,7 +190,7 @@ namespace Oil.Controllers
         /// <param name="No">申请单号</param>
         /// <param name="RefOrderId">申请单据id</param>
         /// <param name="db"></param>
-        public static void SetProcess(string proCode, Guid ApplyPersonId, string No, Guid RefOrderId, OSMS db)
+        public static void SetProcess(string proCode, Guid? ApplyPersonId, string No, Guid RefOrderId, OSMS db)
         {
             ProcessItem Prodata = db.ProcessItem.FirstOrDefault(x => x.Code == proCode);//获取当前流程类型
             List<Models.Approver> Appdata = db.Approver.Where(x => x.ProcessItemId == Prodata.Id).OrderBy(x => x.Order).ToList();//获取当前流程设定 详细

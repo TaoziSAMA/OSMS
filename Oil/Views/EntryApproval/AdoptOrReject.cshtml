@@ -12,14 +12,14 @@
                     Search();
                 }
             })
-            if (data.field.type == "reject") {
-                AjaxPost('/Base/Sendmail', data.field, function (data) {
-                    if (!data) {
-                    } else {
-                        console.log(data);
-                    }
-                })
-            }
+            //if (data.field.type == "reject") {
+            //    AjaxPost('/Base/Sendmail', data.field, function (data) {
+            //        if (!data) {
+            //        } else {
+            //            console.log(data);
+            //        }
+            //    })
+            //}
             return false; //阻止表单跳转。如果需要表单跳转，去掉这段即可。
         });
         form.val("formData", {

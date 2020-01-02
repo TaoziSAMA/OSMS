@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Web;
 using System.Web.Mvc;
 using Oil.Models;
 using Oil.AppCode;
@@ -42,13 +41,15 @@ namespace Oil.Controllers
                 info.CreateTime = Convert.ToDateTime(date[0]);
                 info.UpdateTime = Convert.ToDateTime(date[1]);
             }
+
             PageItem<View_Entry> data;
 
-
+            //查找等待本用户审核的数据
             List<ProcessStepRecord> _data = db.ProcessStepRecord.Where(x => x.WaitForExecutionStaffId == user.Id).ToList();
             List<Guid> infoid = new List<Guid>();
             if (_data.Count > 0)
-            {
+            {   
+                //将待审核数据的申请表id加入集合
                 foreach (var item in _data)
                 {
                     infoid.Add(item.RefOrderId);
@@ -132,13 +133,14 @@ namespace Oil.Controllers
                         ProcessStepRecord infoUp = db.ProcessStepRecord.Where(x => x.RefOrderId == currentInfo.RefOrderId & x.StepOrder == StepOrder).First();
                         // Staff staInfo = Stabll.Get(x => x.Id == infoUp.WaitForExecutionStaffId).First();
                         // SendMailUseGmail(infoUp.No, info.RecordRemarks, staInfo.Email);//邮件通知
-                        infoUp.WhetherToExecute = false;
-                        infoUp.RecordRemarks = info.RecordRemarks;
 
-                        ProcessStepRecord data = db.ProcessStepRecord.Where(x => x.Id == infoUp.Id).OrderByDescending(x => x.StepOrder).First();
+                        //infoUp.WhetherToExecute = false;
+                        //infoUp.RecordRemarks = info.RecordRemarks;
+
+                        ProcessStepRecord data = db.ProcessStepRecord.Where(x => x.Id == currentInfo.Id).OrderByDescending(x => x.StepOrder).First();
                         data.UpdateTime = DateTime.Now; //创建时间
                         data.WhetherToExecute = currentInfo.WhetherToExecute;
-                        data.RecordRemarks = currentInfo.RecordRemarks;
+                        data.RecordRemarks = info.RecordRemarks;
                         data.Result = currentInfo.Result;
                         if (data.WhetherToExecute == true & data.Result == true)
                         {
@@ -151,9 +153,10 @@ namespace Oil.Controllers
                                 data.Discrible = data.Discrible + "=>已审批通过";
                             }
                         }
-                        else if (data.WhetherToExecute == false)
+                        else if (data.WhetherToExecute == true)
                         {
                             data.Discrible = data.Discrible.Replace("=>", "+").Split('+').First();
+                            data.Discrible = data.Discrible + "=>审批驳回";
                         }
                         db.SaveChanges();//保存
                     }

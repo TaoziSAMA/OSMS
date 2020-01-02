@@ -116,6 +116,7 @@ namespace Oil.Controllers
         //保存
         public JsonResult Save(Entry info,string type, string EducationalExperience1Date, string EducationalExperience2Date, string EducationalExperience3Date, string EducationalExperience4Date)
         {
+            Staff user = Session["userInfo"] as Staff;
             var baseCtrler = DependencyResolver.Current.GetService<BaseController>();
             try
             {
@@ -151,6 +152,7 @@ namespace Oil.Controllers
                         info.No=Help.GetOrderNumber<Entry>(db, "RZSQ", "Entry");//获取单号
                         info.CreateTime = DateTime.Now;
                         info.IsDel = false;
+                        info.CreateStaffeId = user.Id;
                         db.Entry.Add(info);
                         db.SaveChanges();    
                     }

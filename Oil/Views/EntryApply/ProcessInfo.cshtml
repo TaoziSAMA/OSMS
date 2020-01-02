@@ -17,11 +17,11 @@
                        field: 'Result', title: '处理流程结果', templet: function (d) {
                            var icon;
                            if (d.WhetherToExecute==true&d.Result==true) {
-                               icon = '<i class="layui-icon layui-icon-ok-circle" style="font-size: 30px; color: Green;"></i>'
+                               icon = '<i class="layui-icon layui-icon-ok" style="font-size: 30px; color: Green;"></i>'
                            }else if (d.WhetherToExecute==false&d.Result==false) {
-                               icon = '<i class="layui-icon layui-icon-download-circle" style="font-size: 30px; color: #1E9FFF;"></i>'
-                           }else if (d.WhetherToExecute == false & d.Result == true) {
-                               icon = '<i class="layui-icon  layui-icon-refresh" style="font-size: 30px; color: #1E9FFF;"></i>'
+                               icon = '<i class="layui-icon layui-icon-refresh" style="font-size: 30px; color: #1E9FFF;"></i>'
+                           }else if (d.WhetherToExecute == true & d.Result == false) {
+                               icon = '<i class="layui-icon  layui-icon-close" style="font-size: 30px; color: red;"></i>'
                            }
                            return icon
                        }

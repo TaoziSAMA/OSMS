@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
+using Oil.Models;
 
 namespace Oil.Controllers
 {
@@ -13,7 +14,17 @@ namespace Oil.Controllers
         // GET: MainPage
         public ActionResult Main()
         {
-            Models.Staff user = Session["userInfo"] as Models.Staff;
+            var baseCtrler = DependencyResolver.Current.GetService<BaseController>();
+            if (baseCtrler.CheckResources("ManagerDaily"))
+            {
+                ViewBag.isManage = true;
+            }
+
+
+            Staff user = Session["userInfo"] as Models.Staff;
+
+            ViewBag.EntryCount = db.ProcessStepRecord.Where(x => x.WaitForExecutionStaffId == user.Id & x.Type == "Entry" & x.WhetherToExecute==false).Count();
+            ViewBag.QuitCount = db.ProcessStepRecord.Where(x => x.WaitForExecutionStaffId == user.Id & x.Type == "LeaveOffice").Count();
             ViewBag.username = user.Name;
             ViewBag.ornname = db.OrganizationStructure.Where(x => x.Id == user.OrgID).Where(x => x.IsDel == false).FirstOrDefault().Name;
             ViewBag.Jobname = db.Job.Where(x => x.Id == user.JobId).Where(x => x.IsDel == false).FirstOrDefault().Name;

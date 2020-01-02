@@ -1,0 +1,157 @@
+﻿
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>Index</title>
+    <link href="~/layuiadmin/layui/css/layui.css" rel="stylesheet" />
+    <link href="~/design/extend/treeGrid.css" rel="stylesheet" />
+</head>
+<body>
+    <script type="text/javascript" src="~/Scripts/jquery-3.3.1.js"></script>
+    <script src="~/layuiadmin/layui/layui.js"></script>
+    <script src="~/design/extend/treeGrid.js"></script>
+    <script type="text/javascript" src="~/Scripts/helper.js"></script>
+    <script>
+    //执行渲染\
+    var table;
+    $(function (){
+        layui.use(['table', 'laydate', 'form'], function () {
+            table = layui.table;
+            var laydate = layui.laydate;
+            var form = layui.form;
+            table.render({
+                elem: '#table'
+               , url: '/QuitApply/GetList' //数据接口
+               , limit: 20
+               , cols: [[ //表头
+                   { field: 'No', title: '申请单号', sort: true },
+                   { field: 'StaffName', title: '申请人' },
+                   { field: 'JobName', title: '岗位' },
+                   {
+                       field: 'ApplyDate', title: '离职日期', templet: function (d) { return GetTime(d.CreateTime, 'yd', '年', '月', '日') }
+                   },
+                    { field: 'LeaveType', title: '离职类别',templet: function (d) { return d.LeaveType ==1 ? '辞职' : '辞退' } },
+                   { field: 'Discrible', title: '审批状态' },
+                   {
+                       field: 'Id', title: '', align: 'center',width: 300, templet: function (d) {
+                           var button;
+                           button = '<div>'
+                           if ('@ViewBag.edit') { button += '<a class="layui-btn layui-btn-sm" lay-event="edit">修改</a>' }
+                           if ('@ViewBag.start') { button += '<a class="layui-btn layui-btn-danger layui-btn-sm" lay-event="start">发起</a> '}
+                           if ('@ViewBag.del') { button +='<a class="layui-btn layui-btn-danger layui-btn-sm" lay-event="del">删除</a>'}
+                           if ('@ViewBag.processView') { button += '<a class="layui-btn layui-btn layui-btn-warm layui-btn-sm" lay-event="processView"><i class="layui-icon layui-icon-link"></i>流程视图</a> ' }
+                            button += '</div> '
+                            return button;
+                        }
+                    }
+                ]]
+                , page: true
+            });
+            form.render();
+            //绑定菜单
+            table.on('tool(table)', function (obj) {
+                var data = obj.data;
+                console.log(data)
+                if (obj.event === 'edit') {
+                    AjaxHTML('/QuitApply/AddOrEdit', data, function (data) {
+                        LayerHtml('编辑离职申请', data,800);
+                     })
+                } else if (obj.event === 'start') {
+                    layer.confirm('发起后将不可更改？', {
+                        btn: ['确定', '取消'] //按钮
+                    }, function () {
+                        AjaxPost('/QuitApply/Start', data, function (data) {
+                            if (data) {
+                                layer.msg('发起成功', { icon: 1 })
+                                Search();
+                            }
+                        })
+                    });
+                } else if (obj.event === 'del') {
+                    layer.confirm('确定要删除该申请吗？', {
+                        btn: ['确定', '取消'] //按钮
+                    }, function () {
+                        AjaxPost('/QuitApply/Del', data, function (data) {
+                            if (data) {
+                                layer.msg('删除成功', { icon: 1 })
+                                Search();
+                            }
+                        })
+                    });
+                } else if (obj.event === 'processView') {
+                    AjaxHTML('/QuitApply/ProcessInfo', data, function (data) {
+                        LayerHtml('员工离职流程信息', data, 550);
+                    })
+                }
+            });
+            laydate.render({
+                elem: '#ApplyDate'
+              , range: '~'
+            });
+
+         });
+    })
+    //搜索
+    function Search() {
+        var obj = $("#search").serializeArray()
+        table.reload('table', {
+            where: { No: obj[0].value, SelApplyDate: obj[1].value }
+            ,page: {
+            curr: 1 //重新从第 1 页开始
+           }
+        });
+    }
+
+    //添加
+    function Add() {
+        AjaxHTML('/QuitApply/AddOrEdit', null, function (data) {
+            LayerHtml('添加离职申请', data, 800);
+        })
+    }
+    </script>
+    <div class="layui-fluid" style="padding: 12px">
+        <div class="layui-row">
+            <div class="layui-card">
+                <div class="layui-card-header">
+                    <h3>员工离职申请</h3>
+                </div>
+                <div class="layui-card-body">
+                    <div class="layui-col-md10">
+                        <form id="search" class="layui-form">
+                            <div class="layui-inline">
+                                <label class="layui-form-label">申请单号</label>
+                                <div class="layui-input-inline" style="width: 150px;">
+                                    <input type="text" name="No" autocomplete="off" class="layui-input">
+                                </div>
+                            </div>
+                            <div class="layui-inline">
+                                <label class="layui-form-label">申请日期</label>
+                                <div class="layui-input-inline" style="width: 250px;">
+                                    <input type="text" name="ApplyDate" id="ApplyDate" placeholder="请选择" class="layui-input" readonly="readonly">
+                                </div>
+                            </div>
+                            <div class="layui-inline">
+                                <button type="button" class="layui-btn" onclick="Search()"><i class="layui-icon layui-icon-search"></i></button>
+                            </div>
+                        </form>
+                    </div>
+                    <div class="layui-col-md1 layui-col-md-offset1" style="text-align:center">
+                        @if (ViewBag.add != null)
+                        {<button class="layui-btn layui-btn-normal" onclick="Add()"><i class="layui-icon layui-icon-add-1"></i>  </button>}
+                    </div>
+                </div>
+                <div class="layui-row" style="margin-top:15px;padding:12px">
+                    <table id="table" class="layui-hide" lay-filter="table"></table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</body>
+</html>

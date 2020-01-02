@@ -1,0 +1,105 @@
+﻿@using Oil.Models;
+@model LeaveOffice
+<script>
+    layui.use(['form', 'laydate'], function () {
+        var form = layui.form;
+        //监听提交
+        form.on('submit(formDemo)', function (data) {
+
+            AjaxPost('/QuitApply/Save', data.field, function (data) {
+                if (data) {
+                    layer.closeAll();
+                    layer.msg('保存成功', { icon: 1 });
+                    Search();
+                }
+            })
+            return false; //阻止表单跳转。如果需要表单跳转，去掉这段即可。
+        });
+        form.val("formData", {
+            "Id": "@Model.Id",
+            "ApplyDate": "@Model.ApplyDate",
+            "LeaveType": "@Model.LeaveType",
+            "Reason": "@Model.Reason",
+            "HandoverSatffName": "@ViewBag.HandoverSatffName",
+            "ExplanationHandover": "@Model.ExplanationHandover",
+            "ApplyPersonId": "@Model.ApplyPersonId",
+            "HandoverSatffId": "@Model.HandoverSatffId",
+            "type": "@ViewBag.type"
+        })
+        form.render();
+        var laydate = layui.laydate;
+        //年月选择器
+        laydate.render({
+            elem: '#applydate'
+        });
+    });
+    //打开添加工作
+    function ShowHandoverSatff() {
+        AjaxHTML('/QuitApply/GetHandoverSatff', null, function (data) {
+            LayerHtmlSet('选择交接人', data, 700, 450)
+        })
+    }
+</script>
+<div style="padding:20px;">
+    <form class="layui-form" id="form" lay-filter="formData">
+        <div class="layui-form-item">
+            <div class="layui-inline">
+                <label class="layui-form-label">申请编号</label>
+                <div class="layui-input-inline">
+                    <label class="layui-form-label">@Model.No</label>
+                </div>
+            </div>
+            <div class="layui-inline">
+                <label class="layui-form-label">申请人</label>
+                <div class="layui-input-inline">
+                    <label class="layui-form-label" style="text-align:left;color:#148541;width:100%">@ViewBag.Job_Name @ViewBag.Staff_Name</label>
+                </div>
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <div class="layui-inline">
+                <label class="layui-form-label">申请日期</label>
+                <div class="layui-input-inline">
+                    <input type="text" name="ApplyDate" class="layui-input" id="applydate" lay-verify="required" lay-verType="tips" placeholder="yyyy-MM-dd" readonly="readonly">
+                </div>
+            </div>
+            <div class="layui-inline">
+                <label class="layui-form-label">类型</label>
+                <div class="layui-input-inline">
+                    <input type="radio" name="LeaveType" value="1" title="辞职" checked="">
+                    <input type="radio" name="LeaveType" value="0" title="辞退">
+                </div>
+            </div>
+        </div>
+        <div class="layui-form-item layui-form-text">
+            <label class="layui-form-label">离职原因</label>
+            <div class="layui-input-block">
+                <textarea placeholder="请输入内容" class="layui-textarea" name="Reason"></textarea>
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <div class="layui-inline">
+                <label class="layui-form-label">交接人</label>
+                <div class="layui-input-inline">
+                    <input type="tel" name="HandoverSatffName" lay-verify="required" lay-verType="tips" placeholder="请选择交接人" autocomplete="off" class="layui-input" onclick="ShowHandoverSatff()">
+                </div>
+            </div>
+            <div class="layui-inline">
+                <label class="layui-form-label">工作交接说明</label>
+                <div class="layui-input-inline">
+                    <textarea placeholder="请输入内容" class="layui-textarea" name="ExplanationHandover"></textarea>
+                </div>
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <div class="layui-input-block">
+                <input type="hidden" name="ApplyPersonId">
+                <input type="hidden" name="HandoverSatffId" />
+                <input type="hidden" name="Id" id="Id">
+                <input type="hidden" name="type">
+                <button class="layui-btn" lay-submit lay-filter="formDemo">保存</button>
+                <button type="reset" class="layui-btn layui-btn-primary">重置</button>
+            </div>
+        </div>
+    </form>
+</div>
