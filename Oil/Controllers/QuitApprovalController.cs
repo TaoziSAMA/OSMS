@@ -1,30 +1,30 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Web;
 using System.Web.Mvc;
 using Oil.Models;
 using Oil.AppCode;
 
 namespace Oil.Controllers
 {
-    
-    public class EntryApprovalController : Controller
+    public class QuitApprovalController : Controller
     {
         OSMS db = new OSMS();
         Staff user = System.Web.HttpContext.Current.Session["userinfo"] as Staff;
-        // GET: EntryApproval
+        // GET: QuitApproval
         public ActionResult Index()
         {
             var baseCtrler = DependencyResolver.Current.GetService<BaseController>();
-            if (baseCtrler.CheckResources("ManagerDailyEntryManager_PassThrough"))
+            if (baseCtrler.CheckResources("ManagerDailyLeaveOffice_PassThrough"))
             {
                 ViewBag.adopt = true;
             }
-            if (baseCtrler.CheckResources("ManagerDailyEntryManager_TurnDown"))
+            if (baseCtrler.CheckResources("ManagerDailyLeaveOffice_TurnDown"))
             {
                 ViewBag.reject = true;
             }
-            if (baseCtrler.CheckResources("ManagerDailyEntryManager_ViewProcess"))
+            if (baseCtrler.CheckResources("ManagerDailyLeaveOffice_ViewProcess"))
             {
                 ViewBag.processView = true;
             }
@@ -32,8 +32,8 @@ namespace Oil.Controllers
         }
 
         //查询列表
-        [CheckResourcesFilter(ResourcesName = "ManagerDailyEntryManager")]
-        public JsonResult GetList(Entry info, string SelApplyDate, string isExecute, int page , int limit)
+        [CheckResourcesFilter(ResourcesName = "ManagerDailyLeaveOffice")]
+        public JsonResult GetList(LeaveOffice info, string SelApplyDate, string isExecute, int page, int limit)
         {
             if (!string.IsNullOrEmpty(SelApplyDate))
             {
@@ -41,23 +41,24 @@ namespace Oil.Controllers
                 info.CreateTime = Convert.ToDateTime(date[0]);
                 info.UpdateTime = Convert.ToDateTime(date[1]);
             }
-
-            PageItem<View_Entry> data;
-
             //查找等待本用户审核的数据
             List<ProcessStepRecord> _data = db.ProcessStepRecord.Where(x => x.WaitForExecutionStaffId == user.Id).ToList();
             List<Guid> infoid = new List<Guid>();
             if (_data.Count > 0)
-            {   
-                //将待审核数据的申请表id加入集合
+            {
                 foreach (var item in _data)
                 {
                     infoid.Add(item.RefOrderId);
                 }
             }
-            PageItem<View_Entry> viewdata = Help.Page(page, limit, db.View_Entry.Where(x => x.IsDel == false & x.No.Contains(info.No == null ? x.No : info.No) & infoid.Contains(x.Id) & info.CreateTime == null ? true : (x.CreateTime >= info.CreateTime &
+
+            PageItem<View_LeaveOfficeJ> viewdata = Help.Page(page, limit, db.View_LeaveOfficeJ.Where(x =>
+              x.IsDel == false &
+              x.No.Contains(info.No == null ? x.No : info.No) &
+              infoid.Contains(x.Id) & info.CreateTime == null ? true : (x.CreateTime >= info.CreateTime &
               x.CreateTime <= info.UpdateTime)).OrderBy(x => x.Id));//当前审批人的全部信息
-            foreach (View_Entry item in viewdata.data)
+
+            foreach (View_LeaveOfficeJ item in viewdata.data)
             {
                 item.NeedExec = Help.GetExec(user.Id, item.Id, db);
                 item.Discrible = Help.GetDiscrible(item.Id, db);
@@ -70,14 +71,12 @@ namespace Oil.Controllers
             {
                 viewdata.data = viewdata.data.Where(x => x.NeedExec == "true").ToList();
             }
-            data = viewdata;
-
-
+            PageItem<View_LeaveOfficeJ> data= viewdata;
             return Json(data, JsonRequestBehavior.AllowGet);
         }
 
         //通过或者驳回
-        public ActionResult AdoptOrReject(Entry info, string type)
+        public ActionResult AdoptOrReject(LeaveOffice info, string type)
         {
             ProcessStepRecord data = db.ProcessStepRecord.Where(x => x.RefOrderId == info.Id && x.WaitForExecutionStaffId == user.Id).First();
             ViewBag.type = type;
@@ -94,16 +93,13 @@ namespace Oil.Controllers
                 currentInfo.WhetherToExecute = true;
                 if (type == "adopt")
                 {
-                    if (baseCtrler.CheckResources("ManagerDailyEntryManager_PassThrough"))
+                    if (baseCtrler.CheckResources("ManagerDailyLeaveOffice_PassThrough"))
                     {
-                        if (currentInfo.ExecuteMethod == "InputStaffInfo")
+                        if (currentInfo.ExecuteMethod == "UpdateStaffStatus")
                         {
-                            new Execution().InputStaffInfo(currentInfo);
+                            new Execution().UpdateStaffStatus(currentInfo);
                         }
-                        if (currentInfo.ExecuteMethod == "FillEntryInfo")
-                        {
-                            new Execution().FillEntryInfo(currentInfo);
-                        }
+
                         currentInfo.Result = true;
 
                         ProcessStepRecord data = db.ProcessStepRecord.Where(x => x.Id == info.Id).OrderByDescending(x => x.StepOrder).First();
@@ -137,11 +133,12 @@ namespace Oil.Controllers
                 {
                     if (baseCtrler.CheckResources("ManagerDailyEntryManager_TurnDown"))
                     {
-                        int StepOrder = 0;
+                        int StepOrder=0;
                         if (currentInfo.StepOrder != 0)
                         {
                             StepOrder = currentInfo.StepOrder - 1;
                         }
+                        
                         ProcessStepRecord infoUp = db.ProcessStepRecord.Where(x => x.RefOrderId == currentInfo.RefOrderId & x.StepOrder == StepOrder).First();
 
                         //List<ProcessStepRecord> infoDown = db.ProcessStepRecord.Where(x => x.RefOrderId == currentInfo.RefOrderId & x.StepOrder > currentInfo.StepOrder).ToList();
@@ -188,6 +185,7 @@ namespace Oil.Controllers
             }
             catch (Exception e) { return baseCtrler.FJson(e.Message); }
         }
+
 
         //流程视图
         public ActionResult ProcessInfo(Entry info)

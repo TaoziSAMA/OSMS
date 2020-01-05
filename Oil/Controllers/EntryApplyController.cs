@@ -98,12 +98,12 @@ namespace Oil.Controllers
                     ViewBag.EducationalExperience3Date = ((DateTime)infoModel.EducationalExperience3StartDate).ToString("yyyy-MM-dd", DateTimeFormatInfo.InvariantInfo) + " ~ " + ((DateTime)infoModel.EducationalExperience3EndDate).ToString("yyyy-MM-dd", DateTimeFormatInfo.InvariantInfo);
                 if (infoModel.EducationalExperience4StartDate != null)
                     ViewBag.EducationalExperience4Date = ((DateTime)infoModel.EducationalExperience4StartDate).ToString("yyyy-MM-dd", DateTimeFormatInfo.InvariantInfo) + " ~ " + ((DateTime)infoModel.EducationalExperience4EndDate).ToString("yyyy-MM-dd", DateTimeFormatInfo.InvariantInfo);
-                List<OrganizationStructure> orgdata = db.OrganizationStructure.Where(x => x.Id == infoModel.Organization_Id).ToList();
+                List<OrganizationStructure> orgdata = db.OrganizationStructure.Where(x => x.Id == infoModel.Organization_Id & x.IsDel==false).ToList();
                 if (orgdata.Count > 0)
                 {
                     ViewBag.Organization_Name = orgdata.FirstOrDefault().Name;
                 }
-                List<Job> jdata = db.Job.Where(x => x.Id == infoModel.JobId).ToList();
+                List<Job> jdata = db.Job.Where(x => x.Id == infoModel.JobId & x.IsDel==false).ToList();
                 if (jdata.Count > 0)
                 {
                     ViewBag.JobName = jdata.FirstOrDefault().Name;

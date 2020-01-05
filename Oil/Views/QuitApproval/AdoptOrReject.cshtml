@@ -1,0 +1,49 @@
+﻿@using Oil.Models;
+@model ProcessStepRecord
+<script>
+    layui.use(['form'], function () {
+        var form = layui.form;
+        //监听提交
+        form.on('submit(formDemo)', function (data) {
+            AjaxPost('/QuitApproval/Save', data.field, function (data) {
+                if (data) {
+                    layer.closeAll();
+                    layer.msg('审核成功', { icon: 1 })
+                    Search();
+                }
+            })
+            //if (data.field.type == "reject") {
+            //    AjaxPost('/Base/Sendmail', data.field, function (data) {
+            //        if (!data) {
+            //        } else {
+            //            console.log(data);
+            //        }
+            //    })
+            //}
+            return false; //阻止表单跳转。如果需要表单跳转，去掉这段即可。
+        });
+        form.val("formData", {
+            "Id": "@Model.Id",
+            "RefOrderId":"@Model.RefOrderId",
+            "type": "@ViewBag.type"
+        })
+        form.render();
+    });
+</script>
+<div style="padding:20px;">
+    <form class="layui-form" id="form" lay-filter="formData">
+        @*<label class="layui-form-label">理由</label>*@
+        <div class="layui-form-item">
+            <textarea placeholder="请输入理由" class="layui-textarea" name="RecordRemarks"></textarea>
+        </div>
+        <div class="layui-form-item">
+            <div class="layui-input-block">
+                <input type="hidden" name="Id">
+                <input type="hidden" name="RefOrderId" />
+                <input type="hidden" name="type">
+                <button class="layui-btn" lay-submit lay-filter="formDemo">保存</button>
+                <button type="reset" class="layui-btn layui-btn-primary">重置</button>
+            </div>
+        </div>
+    </form>
+</div>

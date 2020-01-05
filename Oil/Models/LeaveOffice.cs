@@ -33,7 +33,7 @@ namespace Oil.Models
 
         public Guid? HandoverSatffId { get; set; }
 
-        public Guid? ApplyPersonId { get; set; }
+        public Guid ApplyPersonId { get; set; }
 
         public DateTime? CreateTime { get; set; }
 

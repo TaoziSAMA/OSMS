@@ -73,7 +73,7 @@ namespace Oil.Controllers
             infoModel.ApplyPersonId = user.Id;
             if (info.Id != new Guid())
             {
-                infoModel = db.LeaveOffice.Where(x => x.Id == info.Id).First();
+                infoModel = db.LeaveOffice.Where(x => x.Id == info.Id& x.IsDel==false).First();
                 DateTime ApplyDate = new DateTime();
                 ApplyDate = (DateTime)infoModel.ApplyDate;
                 ViewBag.ApplyDate = ApplyDate.ToString("yyyy-MM-dd", DateTimeFormatInfo.InvariantInfo);

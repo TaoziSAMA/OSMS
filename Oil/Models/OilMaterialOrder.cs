@@ -9,6 +9,7 @@ namespace Oil.Models
     [Table("OilMaterialOrder")]
     public partial class OilMaterialOrder
     {
+
         public Guid Id { get; set; }
 
         [Required]
@@ -28,5 +29,11 @@ namespace Oil.Models
         public DateTime? CreateTime { get; set; }
 
         public DateTime? UpdateTime { get; set; }
+
+
+        //添加外键关联到OilMaterialOrderDetail表的OrderId
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        [ForeignKey("OrderId")]
+        public virtual ICollection<OilMaterialOrderDetail> OilMaterialOrderDetail { get; set; }
     }
 }

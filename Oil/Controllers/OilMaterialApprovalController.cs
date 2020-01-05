@@ -1,30 +1,30 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Web;
 using System.Web.Mvc;
-using Oil.Models;
 using Oil.AppCode;
+using Oil.Models;
 
 namespace Oil.Controllers
 {
-    
-    public class EntryApprovalController : Controller
+    public class OilMaterialApprovalController : Controller
     {
         OSMS db = new OSMS();
         Staff user = System.Web.HttpContext.Current.Session["userinfo"] as Staff;
-        // GET: EntryApproval
+        // GET: OilMaterialApproval
         public ActionResult Index()
         {
             var baseCtrler = DependencyResolver.Current.GetService<BaseController>();
-            if (baseCtrler.CheckResources("ManagerDailyEntryManager_PassThrough"))
+            if (baseCtrler.CheckResources("ManagerDailyOilMaterialOrderManager_PassThrough"))
             {
                 ViewBag.adopt = true;
             }
-            if (baseCtrler.CheckResources("ManagerDailyEntryManager_TurnDown"))
+            if (baseCtrler.CheckResources("ManagerDailyOilMaterialOrderManager_TurnDown"))
             {
                 ViewBag.reject = true;
             }
-            if (baseCtrler.CheckResources("ManagerDailyEntryManager_ViewProcess"))
+            if (baseCtrler.CheckResources("ManagerDailyOilMaterialOrderManager_ViewProcess"))
             {
                 ViewBag.processView = true;
             }
@@ -32,8 +32,8 @@ namespace Oil.Controllers
         }
 
         //查询列表
-        [CheckResourcesFilter(ResourcesName = "ManagerDailyEntryManager")]
-        public JsonResult GetList(Entry info, string SelApplyDate, string isExecute, int page , int limit)
+        [CheckResourcesFilter(ResourcesName = "ManagerDailyOilMaterialOrderManager")]
+        public JsonResult GetList(OilMaterialOrder info, string SelApplyDate,string isExecute, int page , int limit )
         {
             if (!string.IsNullOrEmpty(SelApplyDate))
             {
@@ -41,43 +41,42 @@ namespace Oil.Controllers
                 info.CreateTime = Convert.ToDateTime(date[0]);
                 info.UpdateTime = Convert.ToDateTime(date[1]);
             }
-
-            PageItem<View_Entry> data;
-
             //查找等待本用户审核的数据
             List<ProcessStepRecord> _data = db.ProcessStepRecord.Where(x => x.WaitForExecutionStaffId == user.Id).ToList();
             List<Guid> infoid = new List<Guid>();
             if (_data.Count > 0)
-            {   
-                //将待审核数据的申请表id加入集合
+            {
                 foreach (var item in _data)
                 {
                     infoid.Add(item.RefOrderId);
                 }
             }
-            PageItem<View_Entry> viewdata = Help.Page(page, limit, db.View_Entry.Where(x => x.IsDel == false & x.No.Contains(info.No == null ? x.No : info.No) & infoid.Contains(x.Id) & info.CreateTime == null ? true : (x.CreateTime >= info.CreateTime &
-              x.CreateTime <= info.UpdateTime)).OrderBy(x => x.Id));//当前审批人的全部信息
-            foreach (View_Entry item in viewdata.data)
+
+            PageItem<View_OilMaterialOrderSP> viewdata = Help.Page(page, limit, db.View_OilMaterialOrderSP.Where(x =>
+            x.IsDel == false &
+            x.No.Contains(info.No == null ? x.No : info.No) &
+            infoid.Contains(x.Id) & info.CreateTime == null ? true : (x.CreateTime >= info.CreateTime &
+            x.CreateTime <= info.UpdateTime)).OrderBy(x => x.Id));//当前审批人的全部信息
+
+            foreach (View_OilMaterialOrderSP item in viewdata.data)
             {
                 item.NeedExec = Help.GetExec(user.Id, item.Id, db);
                 item.Discrible = Help.GetDiscrible(item.Id, db);
             }
-            if (isExecute == "1")
+            if (isExecute=="1")
             {
                 viewdata.data = viewdata.data.Where(x => x.NeedExec == "false").ToList();
             }
-            else if (isExecute == "0")
+            else if(isExecute == "0")
             {
                 viewdata.data = viewdata.data.Where(x => x.NeedExec == "true").ToList();
             }
-            data = viewdata;
-
-
+            PageItem<View_OilMaterialOrderSP> data = viewdata;
             return Json(data, JsonRequestBehavior.AllowGet);
         }
 
         //通过或者驳回
-        public ActionResult AdoptOrReject(Entry info, string type)
+        public ActionResult AdoptOrReject(OilMaterialOrder info, string type)
         {
             ProcessStepRecord data = db.ProcessStepRecord.Where(x => x.RefOrderId == info.Id && x.WaitForExecutionStaffId == user.Id).First();
             ViewBag.type = type;
@@ -94,16 +93,9 @@ namespace Oil.Controllers
                 currentInfo.WhetherToExecute = true;
                 if (type == "adopt")
                 {
-                    if (baseCtrler.CheckResources("ManagerDailyEntryManager_PassThrough"))
+                    if (baseCtrler.CheckResources("ManagerDailyOilMaterialOrderManager_PassThrough"))
                     {
-                        if (currentInfo.ExecuteMethod == "InputStaffInfo")
-                        {
-                            new Execution().InputStaffInfo(currentInfo);
-                        }
-                        if (currentInfo.ExecuteMethod == "FillEntryInfo")
-                        {
-                            new Execution().FillEntryInfo(currentInfo);
-                        }
+
                         currentInfo.Result = true;
 
                         ProcessStepRecord data = db.ProcessStepRecord.Where(x => x.Id == info.Id).OrderByDescending(x => x.StepOrder).First();
@@ -135,7 +127,7 @@ namespace Oil.Controllers
                 }
                 else if (type == "reject")
                 {
-                    if (baseCtrler.CheckResources("ManagerDailyEntryManager_TurnDown"))
+                    if (baseCtrler.CheckResources("ManagerDailyOilMaterialOrderManager_TurnDown"))
                     {
                         int StepOrder = 0;
                         if (currentInfo.StepOrder != 0)
@@ -190,7 +182,7 @@ namespace Oil.Controllers
         }
 
         //流程视图
-        public ActionResult ProcessInfo(Entry info)
+        public ActionResult ProcessInfo(OilMaterialOrder info)
         {
             ViewBag.No = null;
             if (db.ProcessStepRecord.Where(x => x.RefOrderId == info.Id).ToList().Count > 0)
@@ -205,8 +197,8 @@ namespace Oil.Controllers
             return View();
         }
         //流程视图返回数据
-        [CheckResourcesFilter(ResourcesName = "ManagerDailyEntryManager_ViewProcess")]
-        public JsonResult GetProcessInfo(Entry info)
+        [CheckResourcesFilter(ResourcesName = "ManagerDailyOilMaterialOrderManager_ViewProcess")]
+        public JsonResult GetProcessInfo(OilMaterialOrder info)
         {
             PageItem<ProcessStepRecord> data = new PageItem<ProcessStepRecord>();
             data.data = db.ProcessStepRecord.Where(x => x.RefOrderId == info.Id).OrderBy(x => x.StepOrder).ToList();

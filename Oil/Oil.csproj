@@ -140,9 +140,12 @@
     <Compile Include="Controllers\IndexController.cs" />
     <Compile Include="Controllers\LoginController.cs" />
     <Compile Include="Controllers\MainPageController.cs" />
+    <Compile Include="Controllers\OilMaterialApplyController.cs" />
+    <Compile Include="Controllers\OilMaterialApprovalController.cs" />
     <Compile Include="Controllers\OrgManageController.cs" />
     <Compile Include="Controllers\ProcessSettingController.cs" />
     <Compile Include="Controllers\QuitApplyController.cs" />
+    <Compile Include="Controllers\QuitApprovalController.cs" />
     <Compile Include="Controllers\RoleAuthorityController.cs" />
     <Compile Include="Controllers\StaffInfoManageController.cs" />
     <Compile Include="Controllers\SystemResourceModuleController.cs" />
@@ -153,6 +156,14 @@
     <Compile Include="Migrations\201912240226444_initCreate.cs" />
     <Compile Include="Migrations\201912240226444_initCreate.Designer.cs">
       <DependentUpon>201912240226444_initCreate.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202001030132088_LeaveOffice_ApplyPersonId_allowNull.cs" />
+    <Compile Include="Migrations\202001030132088_LeaveOffice_ApplyPersonId_allowNull.Designer.cs">
+      <DependentUpon>202001030132088_LeaveOffice_ApplyPersonId_allowNull.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202001041719544_add_Oil_FK.cs" />
+    <Compile Include="Migrations\202001041719544_add_Oil_FK.Designer.cs">
+      <DependentUpon>202001041719544_add_Oil_FK.cs</DependentUpon>
     </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\Approver.cs" />
@@ -755,6 +766,16 @@
     <Content Include="Views\QuitApply\AddOrEdit.cshtml" />
     <Content Include="Views\QuitApply\GetHandoverSatff.cshtml" />
     <Content Include="Views\QuitApply\ProcessInfo.cshtml" />
+    <Content Include="Views\QuitApproval\Index.cshtml" />
+    <Content Include="Views\QuitApproval\ProcessInfo.cshtml" />
+    <Content Include="Views\QuitApproval\AdoptOrReject.cshtml" />
+    <Content Include="Views\OilMaterialApply\Index.cshtml" />
+    <Content Include="Views\OilMaterialApply\AddOrEdit.cshtml" />
+    <Content Include="Views\OilMaterialApply\ProcessInfo.cshtml" />
+    <Content Include="Views\OilMaterialApproval\Index.cshtml" />
+    <Content Include="Views\OilMaterialApproval\ProcessInfo.cshtml" />
+    <Content Include="Views\OilMaterialApproval\AdoptOrReject.cshtml" />
+    <Content Include="Views\Index\EditPwd.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
@@ -776,6 +797,12 @@
   <ItemGroup>
     <EmbeddedResource Include="Migrations\201912240226444_initCreate.resx">
       <DependentUpon>201912240226444_initCreate.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202001030132088_LeaveOffice_ApplyPersonId_allowNull.resx">
+      <DependentUpon>202001030132088_LeaveOffice_ApplyPersonId_allowNull.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202001041719544_add_Oil_FK.resx">
+      <DependentUpon>202001041719544_add_Oil_FK.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>

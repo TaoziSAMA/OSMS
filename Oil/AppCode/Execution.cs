@@ -106,5 +106,19 @@ namespace Oil.AppCode
             data.UpdateTime = DateTime.Now; //创建时间
             db.SaveChanges();
         }
+
+        //离职
+        public void UpdateStaffStatus(ProcessStepRecord info)
+        {
+            ProcessStepRecord datapro = db.ProcessStepRecord.Where(x => x.Id == info.Id).FirstOrDefault();
+            LeaveOffice del = db.LeaveOffice.Where(x => x.Id == info.RefOrderId).FirstOrDefault();
+            Staff stadata = new Staff();
+            stadata.Id = del.ApplyPersonId;
+
+            Staff data = db.Staff.FirstOrDefault(x => x.Id == info.Id);
+            data.Status = "0";
+            data.UpdateTime = DateTime.Now; //创建时间
+            db.SaveChanges();//保存
+        }
     }
 }

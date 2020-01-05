@@ -1,0 +1,81 @@
+﻿
+@using Oil.Models;
+@model Staff
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>EditPwd</title>
+    <link href="~/layuiadmin/layui/css/layui.css" rel="stylesheet" />
+</head>
+<body>
+    <script type="text/javascript" src="~/Scripts/jquery-3.3.1.js"></script>
+    <script src="~/layuiadmin/layui/layui.js"></script>
+    <script type="text/javascript" src="~/Scripts/helper.js"></script>
+    <script>
+    layui.use(['form'], function () {
+        var form = layui.form;
+        //监听提交
+        form.on('submit(formDemo)', function (data) {
+            if (data.field.Newpassword != data.field.Newpasswords) {
+                layer.alert("两次密码不一致", { icon: 2 })
+            } else {
+                AjaxPost('/Index/SavePwd', data.field, function (data) {
+                    if (data) {
+                        layer.closeAll();
+                        layer.msg('保存成功', { icon: 1 })
+                        Search();
+                    }
+                })
+            }
+            return false; //阻止表单跳转。如果需要表单跳转，去掉这段即可。
+        });
+        form.val("formData", {
+            "No": "@Model.Email",
+        })
+        form.render();
+    });
+    </script>
+    <div style="padding:15px;">
+        <form class="layui-form" id="from" lay-filter="formData">
+            <div class="layui-form-item">
+                <label class="layui-form-label">邮箱</label>
+                <div class="layui-input-inline">
+                    <input type="text" name="No" lay-verify="required" autocomplete="off" class="layui-input" readonly="readonly">
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label class="layui-form-label">原始密码</label>
+                <div class="layui-input-inline">
+                    <input type="password" name="Password" lay-verify="required" autocomplete="off" class="layui-input">
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label class="layui-form-label">新密码</label>
+                <div class="layui-input-inline">
+                    <input type="password" name="Newpassword" lay-verify="required" autocomplete="off" class="layui-input">
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label class="layui-form-label">确认密码</label>
+                <div class="layui-input-inline">
+                    <input type="password" name="Newpasswords" lay-verify="required" autocomplete="off" class="layui-input">
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <div class="layui-input-block">
+                    <button class="layui-btn" type="button" lay-submit="" lay-filter="formDemo">立即提交</button>
+                    <button type="reset" class="layui-btn layui-btn-primary">重置</button>
+                </div>
+            </div>
+        </form>
+    </div>
+
+
+</body>
+</html>

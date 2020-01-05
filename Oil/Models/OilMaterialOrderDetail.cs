@@ -29,5 +29,7 @@ namespace Oil.Models
         public DateTime? UpdateTime { get; set; }
 
         public bool? IsDel { get; set; }
+
+
     }
 }

@@ -1,0 +1,175 @@
+﻿@using Oil.Models;
+@model OilMaterialOrder
+<script>
+    var list = [];
+    var oil = new Object();
+    layui.use(['form', 'laydate', 'table','jquery'], function () {
+        var $ = layui.jquery;
+        var form = layui.form;
+        var table = layui.table;
+        //监听提交
+        form.on('submit(formDemo)', function (data) {
+            
+            AjaxPost('/OilMaterialApply/Save', data.field, function (data) {
+                if (data) {
+                    layer.closeAll();
+                    layer.msg('保存成功', { icon: 1 });
+                    Search();
+                }
+            })
+            return false; //阻止表单跳转。如果需要表单跳转，去掉这段即可。
+        });
+        form.val("formData", {
+            "Id": "@Model.Id",
+            "ApplyPersonId": "@Model.ApplyPersonId",
+            "ApplyDate": "@ViewBag.ApplyDate",
+            "Remark": "@Model.Remark",
+            "type": "@ViewBag.type"
+        })
+
+        form.render();
+        var laydate = layui.laydate;
+        //年月选择器
+        laydate.render({
+            elem: '#applydate'
+        });
+    });
+    ////打开添加机构
+    //function ShowOrg() {
+    //    AjaxHTML('EmployeeInfo/GetOrganizationStructure', null, function (data) {
+    //        LayerHtmlSet('选择机构', data, 700, 500)
+    //    })
+    //}
+    ////打开添加机构
+    //function ShowJob() {
+    //    AjaxHTML('EmployeeInfo/GetJob', null, function (data) {
+    //        LayerHtmlSet('选择职位', data, 700, 500)
+    //    })
+    //}
+    GetDetail();
+    //默认加载 获取油料详细列表
+    function GetDetail()
+    {
+        if ($("#Id").val()!="") {
+            AjaxPostData('/OilMaterialApply/GetDetail', { Id: $("#Id").val() }, function (data) {
+                if ($("input[name=type]").val() == "Add") {
+                    AddRow();
+                }
+                //此处的item为项索引，而非c#中foreach中的项
+                for (var item in data) {
+                    var html = ' <tr>'
+                    html += '<td><input type="text" class="layui-input" lay-verify="required"  lay-verType="tips" value="' + data[item].OilSpec + '"/></td>'
+                    html += '<td><input type="text" class="layui-input" lay-verify="required"  lay-verType="tips" value="' + data[item].Volume + '"/></td>'
+                    html += '<td><input type="text" class="layui-input" lay-verify="required"  lay-verType="tips" value="' + data[item].Surplus + '"/></td>'
+                    html += '<td><input type="text" class="layui-input" lay-verify="required"  lay-verType="tips" value="' + data[item].DayAvg + '"/></td>'
+                    html += '<td><input type="text" class="layui-input" lay-verify="required" value="' + data[item].NeedAmount + '"/></td>'
+                    html += '<td><a class="layui-btn layui-btn-danger layui-btn-sm" onclick="DelRow(this)">删除</a></td>'
+                    html += '</tr>'
+                    $("#oiltable tbody").append(html);
+                }
+                SetIndex();
+            })
+        }
+    }
+    //删除行
+    function DelRow(e)
+    {
+        $(e).parent().parent().remove();
+        SetIndex();
+    }
+    //添加行
+    function AddRow()
+    {
+        var html=' <tr>'
+        html += '<td><input type="text" class="layui-input" lay-verify="required"  lay-verType="tips"/></td>'
+        html += '<td><input type="text" class="layui-input" lay-verify="required"  lay-verType="tips"/></td>'
+        html += '<td><input type="text" class="layui-input" lay-verify="required"  lay-verType="tips"/></td>'
+        html += '<td><input type="text" class="layui-input" lay-verify="required"  lay-verType="tips"/></td>'
+        html += '<td><input type="text" class="layui-input" lay-verify="required"  lay-verType="tips"/></td>'
+        html+='<td><a class="layui-btn layui-btn-danger layui-btn-sm" onclick="DelRow(this)">删除</a></td>'
+        html+='</tr>'
+        $("#oiltable tbody").append(html);
+        SetIndex();
+    }
+    //重新生成索引，给各项按索引分配name方便data.field返回给后台
+    function SetIndex() {
+        var div = $("#oiltable tbody tr")
+        for (var i = 1; i < div.length; i++) {
+            $(div[i]).find("input")[0].name = "OilMaterialOrderDetail[" + (i - 1) + "].OilSpec";
+            $(div[i]).find("input")[1].name = "OilMaterialOrderDetail["+(i-1)+"].Volume";
+            $(div[i]).find("input")[2].name = "OilMaterialOrderDetail["+(i-1)+"].Surplus";
+            $(div[i]).find("input")[3].name = "OilMaterialOrderDetail["+(i-1)+"].DayAvg";
+            $(div[i]).find("input")[4].name = "OilMaterialOrderDetail["+(i-1)+"].NeedAmount";
+        }
+    }
+</script>
+<div style="padding:20px;">
+    <form class="layui-form" id="form" lay-filter="formData">
+        <div class="layui-form-item">
+            <div class="layui-inline">
+                <label class="layui-form-label">申请编号</label>
+                <div class="layui-input-inline">
+                    <label class="layui-form-label">@Model.No</label>
+                </div>
+            </div>
+            <div class="layui-inline">
+                <label class="layui-form-label">申请人</label>
+                <div class="layui-input-inline">
+                    <label class="layui-form-label" style="text-align:left">@ViewBag.StaffName</label>
+                </div>
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <div class="layui-inline">
+                <label class="layui-form-label">申请日期</label>
+                <div class="layui-input-inline">
+                    <input type="text" name="ApplyDate" class="layui-input" id="applydate" lay-verify="required" lay-verType="tips" placeholder="yyyy-MM-dd" readonly="readonly">
+                </div>
+            </div>
+        </div>
+        <div class="layui-form-item layui-form-text">
+            <label class="layui-form-label">备注</label>
+            <div class="layui-input-block">
+                <textarea placeholder="请输入内容" class="layui-textarea" name="Remark"></textarea>
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <div class="layui-inline">
+                <label class="layui-form-label" onclick="SetIndex()">油料明细<br><br><a class="layui-btn layui-btn-sm" onclick="AddRow()">添加</a></label>
+                <div class="layui-input-block">
+                    <div class="layui-table-body layui-table-main">
+                        <table cellspacing="0" cellpadding="0" class="layui-table" id="oiltable">
+                            <tbody>
+                                <tr>
+                                    <th class="layui-unselect">油料规格</th>
+                                    <th class="layui-unselect">油罐容积(m3)</th>
+                                    <th class="layui-unselect">剩余（升）</th>
+                                    <th class="layui-unselect">日均销售（升）</th>
+                                    <th class="layui-unselect">需要（升）</th>
+                                    <th class="layui-unselect">操作</th>
+                                </tr>
+                                @*<tr>
+                                        <td><input type="text" name="OilMaterialOrderDetail[0].OilSpec" class="layui-input" lay-verify="required"  lay-verType="tips"/></td>
+                                        <td><input type="text" name="OilMaterialOrderDetail[0].Volume" class="layui-input" lay-verify="required"  lay-verType="tips"/></td>
+                                        <td><input type="text" name="OilMaterialOrderDetail[0].Surplus" class="layui-input" lay-verify="required"  lay-verType="tips"/></td>
+                                        <td><input type="text" name="OilMaterialOrderDetail[0].DayAvg" class="layui-input" lay-verify="required"  lay-verType="tips"/></td>
+                                        <td><input type="text" name="OilMaterialOrderDetail[0].NeedAmount" class="layui-input" lay-verify="required"  lay-verType="tips"/></td>
+                                        <td><a class="layui-btn layui-btn-danger layui-btn-sm" onclick="DelRow(this)">删除</a></td>
+                                    </tr>*@
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <div class="layui-input-block">
+                <input type="hidden" name="ApplyPersonId">
+                <input type="hidden" name="Id" id="Id">
+                <input type="hidden" name="type">
+                <button class="layui-btn" lay-submit lay-filter="formDemo">保存</button>
+                <button type="reset" class="layui-btn layui-btn-primary">重置</button>
+            </div>
+        </div>
+    </form>
+</div>

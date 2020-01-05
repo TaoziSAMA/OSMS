@@ -27,26 +27,19 @@
             var form = layui.form;
             table.render({
                 elem: '#table'
-               , url: '/EntryApproval/GetList' //数据接口
+               , url: '/QuitApproval/GetList' //数据接口
                , limit: 20
                , cols: [[ //表头
-                   { field: 'No', title: '申请单号', width: 150, },
-                   { field: 'StaffName', title: '员工姓名', width: 100 },
+                   { field: 'No', title: '申请单号', sort: true },
+                   { field: 'StaffName', title: '申请人' },
+                   { field: 'JobName', title: '岗位' },
                    {
-                       field: 'BirthDay', title: '出生日期', width: 150, templet: function (d) { return GetTime(d.BirthDay, 'yd', '年', '月', '日') }
+                       field: 'ApplyDate', title: '离职日期', templet: function (d) { return GetTime(d.CreateTime, 'yd', '年', '月', '日') }
                    },
-                   {
-                       field: '', title: '年龄', width: 80, templet: function (d) {
-                           return GetAge(d.BirthDay)
-                       }
-                   },
-                   { field: 'NativePlace', title: '籍贯', width: 100, },
-                   { field: 'Tel', title: '电话', width: 150 },
-                   { field: 'Email', title: '邮箱', width: 150 },
-                   { field: 'Title', title: '昵称', width: 100 },
+                    { field: 'LeaveType', title: '离职类别', templet: function (d) { return d.LeaveType == 1 ? '辞职' : '辞退' } },
                    { field: 'Discrible', title: '审批状态' },
                    {
-                       field: 'Id', title: '', align: 'center',width: 250, templet: function (d) {
+                       field: 'Id', title: '', align: 'center', templet: function (d) {
                            var button;
                            button = '<div>'
                            if (d.NeedExec == 'true') {
@@ -66,17 +59,16 @@
             table.on('tool(table)', function (obj) {
                 var data = obj.data;
                 if (obj.event === 'adopt') {
-                    AjaxHTML('/EntryApproval/AdoptOrReject?type=adopt', data, function (data) {
+                    AjaxHTML('/QuitApproval/AdoptOrReject?type=adopt', data, function (data) {
                         LayerHtml('通过', data);
                     })
                 } else if (obj.event === 'reject') {
-                    alert(1)
-                    AjaxHTML('/EntryApproval/AdoptOrReject?type=reject', data, function (data) {
+                    AjaxHTML('/QuitApproval/AdoptOrReject?type=reject', data, function (data) {
                         LayerHtml('驳回', data);
                     })
                 } else if (obj.event === 'processView') {
-                    AjaxHTML('/EntryApproval/ProcessInfo', data, function (data) {
-                        LayerHtml('入职申请流程信息', data, 550);
+                    AjaxHTML('/QuitApproval/ProcessInfo', data, function (data) {
+                        LayerHtml('员工离职流程信息', data, 550);
                     })
                 }
             });
@@ -100,8 +92,8 @@
 
     ////添加
     //function Add() {
-    //    AjaxHTML('OilMaterialApply/AddOrEdit', null, function (data) {
-    //        LayerHtmlSet('添加油料申请', data, 1000, 700);
+    //    AjaxHTML('/QuitApply/AddOrEdit', null, function (data) {
+    //        LayerHtml('添加离职申请', data, 800);
     //    })
     //}
     </script>
@@ -109,7 +101,7 @@
         <div class="layui-row">
             <div class="layui-card">
                 <div class="layui-card-header">
-                    <h3>员工入职审批</h3>
+                    <h3>员工离职审批</h3>
                 </div>
                 <div class="layui-card-body">
                     <div class="layui-col-md10">

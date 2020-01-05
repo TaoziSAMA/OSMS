@@ -22,9 +22,9 @@ namespace Oil.Controllers
 
 
             Staff user = Session["userInfo"] as Models.Staff;
-
+            ViewBag.OilCount= db.ProcessStepRecord.Where(x => x.WaitForExecutionStaffId == user.Id & x.Type == "OilMaterialOrder" & x.WhetherToExecute == false).Count();
             ViewBag.EntryCount = db.ProcessStepRecord.Where(x => x.WaitForExecutionStaffId == user.Id & x.Type == "Entry" & x.WhetherToExecute==false).Count();
-            ViewBag.QuitCount = db.ProcessStepRecord.Where(x => x.WaitForExecutionStaffId == user.Id & x.Type == "LeaveOffice").Count();
+            ViewBag.QuitCount = db.ProcessStepRecord.Where(x => x.WaitForExecutionStaffId == user.Id & x.Type == "LeaveOffice"& x.WhetherToExecute == false).Count();
             ViewBag.username = user.Name;
             ViewBag.ornname = db.OrganizationStructure.Where(x => x.Id == user.OrgID).Where(x => x.IsDel == false).FirstOrDefault().Name;
             ViewBag.Jobname = db.Job.Where(x => x.Id == user.JobId).Where(x => x.IsDel == false).FirstOrDefault().Name;

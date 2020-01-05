@@ -193,12 +193,13 @@ namespace Oil.Controllers
         public static void SetProcess(string proCode, Guid? ApplyPersonId, string No, Guid RefOrderId, OSMS db)
         {
             ProcessItem Prodata = db.ProcessItem.FirstOrDefault(x => x.Code == proCode);//获取当前流程类型
-            List<Models.Approver> Appdata = db.Approver.Where(x => x.ProcessItemId == Prodata.Id).OrderBy(x => x.Order).ToList();//获取当前流程设定 详细
+
             Models.Staff Stadata = db.Staff.FirstOrDefault(x => x.Id == ApplyPersonId);//获取当前用户信息
             List<Models.OrganizationStructure> SaveOrg = new List<OrganizationStructure>();//保存应有的机构
             Models.OrganizationStructure OrgOne = db.OrganizationStructure.FirstOrDefault(x => x.Id == Stadata.OrgID);//用户当前机构信息
             SaveOrg.Add(OrgOne);
             int leg = OrgOne.Leve;
+            List<Models.Approver> Appdata = db.Approver.Where(x => x.ProcessItemId == Prodata.Id & x.AreaLeve<=leg).OrderBy(x => x.Order).ToList();//获取当前流程设定 详细
             //将用户上级机构加入集合中
             for (int i = 0; i < leg; i++)
             {
@@ -230,8 +231,15 @@ namespace Oil.Controllers
                 StepOrder++;//增加顺序
                 if (StaCurrent.Id == ApplyPersonId)//审批人发起则默认通过
                 {
+                    
                     ProCurrent.WhetherToExecute = true;//默认执行
                     ProCurrent.Result = true;//默认通过
+                    //如果是最高级机构人员则不通过等待自行审批
+                    if (Appitem.AreaLeve == 0)
+                    {
+                        ProCurrent.WhetherToExecute = false;//默认不执行
+                        ProCurrent.Result = false;//默认不通过
+                    }
                 }
                 db.ProcessStepRecord.Add(ProCurrent);
             }
@@ -241,7 +249,7 @@ namespace Oil.Controllers
         //获取是否需要执行
         public static string GetExec(Guid staffId, Guid refOrderId,OSMS db)
         {
-            string NeedExec = "";
+            string NeedExec = "false";
             List<ProcessStepRecord> currentApply = db.ProcessStepRecord.Where(x => x.RefOrderId == refOrderId).ToList();//当前订单流程
             ProcessStepRecord currentUser = currentApply.FirstOrDefault(x => x.WaitForExecutionStaffId == staffId);//当前审批人的状态
             if (currentUser.StepOrder == 0)

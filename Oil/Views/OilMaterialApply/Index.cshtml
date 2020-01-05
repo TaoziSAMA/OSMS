@@ -27,32 +27,22 @@
             var form = layui.form;
             table.render({
                 elem: '#table'
-               , url: '/EntryApproval/GetList' //数据接口
+               , url: '/OilMaterialApply/GetList' //数据接口
                , limit: 20
                , cols: [[ //表头
-                   { field: 'No', title: '申请单号', width: 150, },
-                   { field: 'StaffName', title: '员工姓名', width: 100 },
+                   { field: 'No', title: '申请单号', sort: true },
+                   { field: 'StaffName', title: '申请人' },
                    {
-                       field: 'BirthDay', title: '出生日期', width: 150, templet: function (d) { return GetTime(d.BirthDay, 'yd', '年', '月', '日') }
+                       field: 'CreateTime', title: '申请日期', templet: function (d) { return GetTime(d.CreateTime, 'yd', '年', '月', '日') }
                    },
-                   {
-                       field: '', title: '年龄', width: 80, templet: function (d) {
-                           return GetAge(d.BirthDay)
-                       }
-                   },
-                   { field: 'NativePlace', title: '籍贯', width: 100, },
-                   { field: 'Tel', title: '电话', width: 150 },
-                   { field: 'Email', title: '邮箱', width: 150 },
-                   { field: 'Title', title: '昵称', width: 100 },
                    { field: 'Discrible', title: '审批状态' },
                    {
-                       field: 'Id', title: '', align: 'center',width: 250, templet: function (d) {
+                       field: 'Id', title: '', align: 'center', templet: function (d) {
                            var button;
                            button = '<div>'
-                           if (d.NeedExec == 'true') {
-                               if ('@ViewBag.adopt') { button += '<a class="layui-btn layui-btn-sm" lay-event="adopt">通过</a> ' }
-                               if ('@ViewBag.reject') { button += '<a class="layui-btn layui-btn-danger layui-btn-sm" lay-event="reject">驳回</a>' }
-                           }
+                           if ('@ViewBag.edit') { button += '<a class="layui-btn layui-btn-sm" lay-event="edit">修改</a>' }
+                           if ('@ViewBag.start') { button += '<a class="layui-btn layui-btn-danger layui-btn-sm" lay-event="start">发起</a> ' }
+                           if ('@ViewBag.del') { button += '<a class="layui-btn layui-btn-danger layui-btn-sm" lay-event="del">删除</a>' }
                            if ('@ViewBag.processView') { button += '<a class="layui-btn layui-btn layui-btn-warm layui-btn-sm" lay-event="processView"><i class="layui-icon layui-icon-link"></i>流程视图</a> ' }
                            button += '</div> '
                            return button;
@@ -65,18 +55,36 @@
             //绑定菜单
             table.on('tool(table)', function (obj) {
                 var data = obj.data;
-                if (obj.event === 'adopt') {
-                    AjaxHTML('/EntryApproval/AdoptOrReject?type=adopt', data, function (data) {
-                        LayerHtml('通过', data);
+                console.log(data)
+                if (obj.event === 'edit') {
+                    AjaxHTML('/OilMaterialApply/AddOrEdit', data, function (data) {
+                        LayerHtmlSet('编辑油料申请', data, 1000, 700);
                     })
-                } else if (obj.event === 'reject') {
-                    alert(1)
-                    AjaxHTML('/EntryApproval/AdoptOrReject?type=reject', data, function (data) {
-                        LayerHtml('驳回', data);
-                    })
+                } else if (obj.event === 'start') {
+                    layer.confirm('发起后将不可更改？', {
+                        btn: ['确定', '取消'] //按钮
+                    }, function () {
+                        AjaxPost('/OilMaterialApply/Start', data, function (data) {
+                            if (data) {
+                                layer.msg('发起成功', { icon: 1 })
+                                Search();
+                            }
+                        })
+                    });
+                } else if (obj.event === 'del') {
+                    layer.confirm('确定要删除该申请吗？', {
+                        btn: ['确定', '取消'] //按钮
+                    }, function () {
+                        AjaxPost('/OilMaterialApply/Del', data, function (data) {
+                            if (data) {
+                                layer.msg('删除成功', { icon: 1 })
+                                Search();
+                            }
+                        })
+                    });
                 } else if (obj.event === 'processView') {
-                    AjaxHTML('/EntryApproval/ProcessInfo', data, function (data) {
-                        LayerHtml('入职申请流程信息', data, 550);
+                    AjaxHTML('/OilMaterialApply/ProcessInfo', data, function (data) {
+                        LayerHtml('油料申请流程信息', data, 550);
                     })
                 }
             });
@@ -91,55 +99,49 @@
     function Search() {
         var obj = $("#search").serializeArray()
         table.reload('table', {
-            where: { No: obj[0].value, SelApplyDate: obj[1].value, isExecute: obj[2].value }
+            where: { No: obj[0].value, SelApplyDate: obj[1].value }
             , page: {
                 curr: 1 //重新从第 1 页开始
             }
         });
     }
 
-    ////添加
-    //function Add() {
-    //    AjaxHTML('OilMaterialApply/AddOrEdit', null, function (data) {
-    //        LayerHtmlSet('添加油料申请', data, 1000, 700);
-    //    })
-    //}
+    //添加
+    function Add() {
+        AjaxHTML('/OilMaterialApply/AddOrEdit', null, function (data) {
+            LayerHtmlSet('添加油料申请', data, 1000, 700);
+        })
+    }
     </script>
     <div class="layui-fluid" style="padding: 12px">
         <div class="layui-row">
             <div class="layui-card">
                 <div class="layui-card-header">
-                    <h3>员工入职审批</h3>
+                    <h3>油料申请</h3>
                 </div>
                 <div class="layui-card-body">
                     <div class="layui-col-md10">
                         <form id="search" class="layui-form">
                             <div class="layui-inline">
                                 <label class="layui-form-label">申请单号</label>
-                                <div class="layui-input-inline" style="width:150px">
+                                <div class="layui-input-inline" style="width: 150px;">
                                     <input type="text" name="No" autocomplete="off" class="layui-input">
                                 </div>
                             </div>
-                            <div class="layui-inline layui-col-md4">
+                            <div class="layui-inline">
                                 <label class="layui-form-label">申请日期</label>
-                                <div class="layui-input-inline">
+                                <div class="layui-input-inline" style="width: 250px;">
                                     <input type="text" name="ApplyDate" id="ApplyDate" placeholder="请选择" class="layui-input" readonly="readonly">
-                                </div>
-                            </div>
-                            <div class="layui-inline layui-col-md3">
-                                <label class="layui-form-label">是否处理</label>
-                                <div class="layui-input-block">
-                                    <select name="WhetherToExecute" id="WhetherToExecute" lay-verify="required">
-                                        <option value=""></option>
-                                        <option value="1">已处理</option>
-                                        <option value="0">未处理</option>
-                                    </select>
                                 </div>
                             </div>
                             <div class="layui-inline">
                                 <button type="button" class="layui-btn" onclick="Search()"><i class="layui-icon layui-icon-search"></i></button>
                             </div>
                         </form>
+                    </div>
+                    <div class="layui-col-md1 layui-col-md-offset1" style="text-align:center">
+                        @if (ViewBag.add != null)
+                        {<button class="layui-btn layui-btn-normal" onclick="Add()"><i class="layui-icon layui-icon-add-1"></i>  </button>}
                     </div>
                 </div>
                 <div class="layui-row" style="margin-top:15px;padding:12px">

@@ -5,7 +5,7 @@
             table = layui.table;
             table.render({
                 elem: '#table1'
-               , url: '/EntryApproval/GetProcessInfo?Id=@ViewBag.Id' //数据接口
+               , url: '/QuitApproval/GetProcessInfo?Id=@ViewBag.Id' //数据接口
                , limit: 20
                , cols: [[ //表头
                    {
@@ -21,7 +21,7 @@
                            }else if (d.WhetherToExecute==false&d.Result==false) {
                                icon = '<i class="layui-icon layui-icon-refresh" style="font-size: 30px; color: #1E9FFF;"></i>'
                            } else if (d.WhetherToExecute == true & d.Result == false) {
-                               icon = '<i class="layui-icon  layui-icon-close" style="font-size: 30px; color: red;"></i>'
+                               icon = '<i class="layui-icon  layui-icon-close" style="font-size: 30px; color:red;"></i>'
                            }
                            return icon
                        }
@@ -32,7 +32,7 @@
 </script>
 <div style="padding:20px;height:300px">
     <div class="layui-row">
-        <label class="layui-label">入职申请流程(@ViewBag.No)</label>
+        <label class="layui-label">员工离职流程(@ViewBag.No)</label>
     </div>
     <div class="layui-row">
         <table id="table1" class="layui-hide" lay-filter="table1"></table>
