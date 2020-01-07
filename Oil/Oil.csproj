@@ -711,6 +711,7 @@
     <Content Include="design\font\iconfont.eot" />
     <Content Include="design\font\iconfont.ttf" />
     <Content Include="design\font\iconfont.woff" />
+    <None Include="Properties\PublishProfiles\FolderProfile.pubxml" />
     <None Include="Scripts\jquery-3.3.1.intellisense.js" />
     <Content Include="Scripts\helper.js" />
     <Content Include="Scripts\jquery-3.3.1.js" />

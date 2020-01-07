@@ -108,7 +108,33 @@
                         </table>
                     </div>
                 </div>
-               
+                <div class="layui-card">
+                    <div class="layui-card-header">天气</div>
+                    <div class="layui-card-body">
+                        <div class=" layadmin-backlog">
+                            <ul class="layui-row layui-col-space10">
+                                <li class="layui-col-xs4">
+                                    <a class="layadmin-backlog-body">
+                                        <h3>今日天气</h3>
+                                        <p><cite>@ViewBag.EntryCount</cite></p>
+                                    </a>
+                                </li>
+                                <li class="layui-col-xs4">
+                                    <a class="layadmin-backlog-body">
+                                        <h3>今日温度</h3>
+                                        <p><cite>@ViewBag.QuitCount</cite></p>
+                                    </a>
+                                </li>
+                                <li class="layui-col-xs4">
+                                    <a class="layadmin-backlog-body">
+                                        <h3>温馨提醒</h3>
+                                        <p><cite>@ViewBag.OilCount</cite></p>
+                                    </a>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
 
             </div>
 
@@ -116,12 +142,18 @@
     </div>
     <script src="~/Scripts/jquery-3.3.1.js"></script>
     <script src="~/layuiadmin/layui/layui.js"></script>
+    <!-- 天气插件 -->
+    <script type="text/javascript">
+        WIDGET = { FID: 'uijCQIlgX6' }
+    </script>
+    <script type="text/javascript" src="https://apip.weatherdt.com/float/static/js/r.js?v=1111"></script>
     <script>
   layui.config({
     base: '/layuiadmin/' //静态资源所在路径
   }).extend({
       index: 'lib/index', //主入口模块
-  }).use(['index', 'console', 'echarts'], function () {
+  }).use(['index', 'console', 'echarts','jquery'], function () {
+        var $ = layui.jquery;
         var echarts = layui.echarts;
         // 基于准备好的dom，初始化echarts实例
         var myChart = echarts.init(document.getElementById('main'));
@@ -147,8 +179,18 @@
 
         // 使用刚指定的配置项和数据显示图表。
         myChart.setOption(option);
+
+
+        getWeather()
   });
-        
+        function getWeather() {
+            $.ajax({
+                url: "https://api.heweather.net/s6/weather/now?location=auto_ip&key=d114ce2b16a34659b3c6b5f1c704e8cc",
+                success(result) {
+                    console.log(result)
+                }
+            })
+        }
     </script>
 </body>
 </html>

@@ -115,7 +115,7 @@ namespace Oil.AppCode
             Staff stadata = new Staff();
             stadata.Id = del.ApplyPersonId;
 
-            Staff data = db.Staff.FirstOrDefault(x => x.Id == info.Id);
+            Staff data = db.Staff.FirstOrDefault(x => x.Id == del.ApplyPersonId);
             data.Status = "0";
             data.UpdateTime = DateTime.Now; //创建时间
             db.SaveChanges();//保存

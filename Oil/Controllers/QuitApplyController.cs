@@ -239,7 +239,7 @@ namespace Oil.Controllers
             return View();
         }
         //流程视图返回数据
-        [CheckResourcesFilter(ResourcesName = "ManagerDailyEntryManager_ViewProcess")]
+        [CheckResourcesFilter(ResourcesName = "ManagerDailyLeaveOffice_ViewProcess")]
         public JsonResult GetProcessInfo(Entry info)
         {
             PageItem<ProcessStepRecord> data = new PageItem<ProcessStepRecord>();

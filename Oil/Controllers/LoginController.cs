@@ -67,7 +67,7 @@ namespace Oil.Controllers
                 data = token
             };
 
-            var list = db.Staff.Where(u => u.Email == email && u.Password == pwd).FirstOrDefault();
+            var list = db.Staff.Where(u => u.Email == email && u.Password == pwd && u.Status=="1").FirstOrDefault();
             if (list != null)
             {
                 if (remember != null)

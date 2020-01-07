@@ -50,6 +50,7 @@ namespace Oil.Controllers
             ViewBag.x6 = xarray[5];
             ViewBag.x7 = xarray[6];
             ViewBag.y = help.GetY(user.Id);
+
             return View();
         }
     }
