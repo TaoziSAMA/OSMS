@@ -16,6 +16,8 @@ namespace Oil.Controllers
         [LoginFilter(IsCheck = false)]
         public ActionResult Index()
         {
+            //清空用户session
+            Session["userinfo"] = null;
             //判断是否存在cookie
             if (Request.Cookies.Count > 0)
             {
@@ -124,6 +126,16 @@ namespace Oil.Controllers
                 return Json(result2, JsonRequestBehavior.AllowGet);
             }
 
+        }
+
+        //获取验证码
+        public ActionResult showvalidate()
+        {
+            ValidateCode validate = new ValidateCode();
+            var str = validate.CreateValidateCode(4);
+            Session["validateCode"] = str;
+            byte[] buffer = validate.CreateValidateGraphic(str);
+            return File(buffer, "image/jpeg");
         }
     }
 }

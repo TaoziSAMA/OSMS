@@ -87,6 +87,13 @@
     </div>
 
     <script src="~/layuiadmin/layui/layui.js"></script>
+    <script language="JavaScript">
+
+        if (window != top)
+
+            top.location.href = location.href;
+
+    </script>
     <script>
         layui.config({
             base: '/layuiadmin/' //静态资源所在路径
@@ -107,7 +114,7 @@
                     $("#loginbtn").trigger("click");
                 }
             });
-            
+
             window.enter = function () {
                 //提交
                 form.on('submit(LAY-user-login-submit)', function (obj) {

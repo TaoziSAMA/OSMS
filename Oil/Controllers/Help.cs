@@ -10,10 +10,13 @@ namespace Oil.Controllers
 {
     public class Help
     {
+
+
+
         //主页echart数据
         public string GetY(Guid StaffId)
         {
-            using (Models.OSMS db =new Models.OSMS())
+            using (OSMS db =new OSMS())
             {
                 string result = null;
                 DateTime Date =DateTime.Now.Date; //当前时间

@@ -129,6 +129,7 @@
     <Compile Include="AppCode\Execution.cs" />
     <Compile Include="AppCode\LoginFilter.cs" />
     <Compile Include="AppCode\PageItem.cs" />
+    <Compile Include="AppCode\ValidateCode.cs" />
     <Compile Include="App_Start\BundleConfig.cs" />
     <Compile Include="App_Start\FilterConfig.cs" />
     <Compile Include="App_Start\RouteConfig.cs" />
